@@ -1,0 +1,30 @@
+<header class="neo-bg text-slate-700 px-4 py-3 md:px-8 shadow-sm z-1000 fixed w-full">
+  <div class="flex items-center justify-between">
+    <div class="flex items-center gap-4">
+      @if (showToggle()) {
+        <button class="neo-button p-3 rounded-full flex items-center justify-center text-slate-600 hover:text-blue-600 focus:outline-none" (click)="toggleSidebar.emit()">
+          <i class="pi pi-bars text-xl"></i>
+        </button>
+      }
+
+      <a routerLink="/" class="text-2xl font-bold tracking-tight text-blue-600 no-underline">
+        SportVenue
+      </a>
+    </div>
+
+    <div class="md:flex items-center gap-3 font-medium">
+      @if (isLoggedIn) {
+        <span class="text-sm font-semibold text-slate-600">{{ user?.name }}</span>
+        <button class="neo-button px-4 py-2 rounded-full font-semibold text-red-500 hover:text-red-600" (click)="logout()">
+          Logout
+        </button>
+      } @else {
+        <a routerLink="/auth/register" [queryParams]="{ role: 'venue-owner' }" class="neo-button px-4 py-2 rounded-full font-semibold no-underline text-blue-600 inline-block whitespace-nowrap">
+          <i class="pi pi-plus mr-1 text-xs"></i> Register Venue
+        </a>
+        <a routerLink="/auth/register" class="neo-button px-4 py-2 rounded-full font-semibold no-underline text-slate-700 inline-block">Register</a>
+        <a routerLink="/auth/login" class="neo-button px-4 py-2 rounded-full font-semibold no-underline text-slate-700 inline-block">Login</a>
+      }
+    </div>
+  </div>
+</header>

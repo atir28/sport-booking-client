@@ -1,0 +1,247 @@
+<!-- Hero Section -->
+<section class="relative pt-12 pb-16 px-4 md:px-8 flex flex-col items-center mt-18">
+  <div class="text-center z-10 max-w-3xl mb-8">
+    <h1 class="text-4xl md:text-5xl font-extrabold text-slate-800 mb-4 tracking-tight drop-shadow-sm">
+      Find your next sports venue
+    </h1>
+    <p class="text-lg md:text-xl text-slate-600 font-medium">
+      Search low prices on courts, fields, and much more...
+    </p>
+  </div>
+
+  <!-- Sport Selection Tabs -->
+  <div class="flex justify-center gap-3 mb-8 flex-wrap">
+    @for (tab of tabs; track tab.label) {
+      <button
+        class="flex items-center gap-2.5 px-7 py-3 rounded-2xl transition-all duration-200 cursor-pointer"
+        [class]="
+          tab.label === activeTab
+            ? 'neo-shadow-inset text-blue-600 font-bold'
+            : 'neo-button text-slate-600 hover:text-blue-500 font-semibold'
+        "
+        (click)="activeTab = tab.label"
+      >
+        <i [class]="tab.icon + ' text-lg'"></i>
+        <span class="text-base">{{ tab.label }}</span>
+      </button>
+    }
+  </div>
+
+  <!-- Search Panel -->
+  <div class="w-full max-w-5xl">
+    <div class="neo-bg neo-shadow rounded-3xl p-6 md:p-8">
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-5 items-end">
+
+        <!-- Location -->
+        <div>
+          <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Location</label>
+          <div class="relative">
+            <i class="pi pi-map-marker absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
+            <p-select
+              [options]="locationOptions"
+              [(ngModel)]="location"
+              placeholder="Select location"
+              styleClass="w-full"
+              [style]="{ width: '100%' }"
+            ></p-select>
+          </div>
+        </div>
+
+        <!-- Date -->
+        <div>
+          <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Date</label>
+          <div class="relative">
+            <i class="pi pi-calendar absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 z-10"></i>
+            <p-datepicker
+              [(ngModel)]="date"
+              placeholder="Pick a date"
+              styleClass="w-full"
+              [inputStyleClass]="'neo-input w-full pl-12 pr-4 py-3 rounded-xl text-slate-700 font-medium placeholder-slate-400 border-none box-border'"
+            ></p-datepicker>
+          </div>
+        </div>
+
+        <!-- When -->
+        <div>
+          <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">When</label>
+          <p-select
+            [options]="dayOptions"
+            [(ngModel)]="selectedDay"
+            placeholder="Select day"
+            styleClass="w-full"
+            [style]="{ width: '100%' }"
+          ></p-select>
+        </div>
+
+        <!-- Search Button -->
+        <button
+          class="neo-button bg-blue-600 text-white px-8 py-3.5 rounded-xl font-bold text-base hover:bg-blue-700 transition-colors w-full shadow-none cursor-pointer"
+          (click)="onSearch()"
+        >
+          <i class="pi pi-search mr-2"></i> Search
+        </button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Main Content Below -->
+<section class="px-4 md:px-8 py-8 max-w-7xl mx-auto">
+  <!-- Search Results -->
+  @if (hasSearched) {
+    <div class="flex items-center justify-between mb-5">
+      <p class="text-sm font-bold text-slate-500">
+        {{ searchResults.length }} {{ activeTab }} venue{{ searchResults.length !== 1 ? 's' : '' }} found
+      </p>
+      <button
+        class="neo-button px-4 py-2 rounded-lg text-sm font-bold text-blue-700 hover:text-blue-800 transition-colors"
+        (click)="clearSearch()"
+      >
+        <i class="pi pi-arrow-left mr-1"></i> Back to Trending
+      </button>
+    </div>
+
+    @if (searchResults.length === 0) {
+      <div class="neo-bg neo-shadow rounded-2xl p-12 text-center">
+        <div class="neo-shadow-inset w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4">
+          <i class="pi pi-search text-3xl text-slate-300"></i>
+        </div>
+        <p class="text-slate-400 font-bold text-lg">No venues found</p>
+        <p class="text-slate-400 font-medium text-sm mt-1">Try a different location or sport</p>
+      </div>
+    } @else {
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        @for (venue of searchResults; track venue.id) {
+          <div class="neo-bg neo-shadow rounded-2xl overflow-hidden flex flex-col">
+            <!-- Venue Image -->
+            <div class="h-44 overflow-hidden">
+              <img [src]="venue.image" [alt]="venue.name" class="w-full h-full object-cover" />
+            </div>
+
+            <!-- Venue Info -->
+            <div class="p-5 flex flex-col flex-1">
+              <div class="flex items-start justify-between mb-2">
+                <div>
+                  <h3 class="font-extrabold text-slate-800 text-lg leading-tight">{{ venue.name }}</h3>
+                  <p class="text-slate-500 text-sm font-medium flex items-center gap-1 mt-1">
+                    <i class="pi pi-map-marker text-xs"></i>
+                    {{ venue.location }}
+                  </p>
+                </div>
+                <div class="neo-shadow-inset px-2.5 py-1 rounded-lg flex flex-col items-center gap-0.5">
+                  <div class="flex items-center gap-1">
+                    <i class="pi pi-star-fill text-yellow-500 text-xs"></i>
+                    <span class="text-sm font-bold text-slate-700">{{ venue.rating }}</span>
+                  </div>
+                  <span class="text-[10px] text-slate-400 font-medium">{{ venue.totalRatings }} ratings</span>
+                </div>
+              </div>
+
+              <p class="text-slate-500 text-sm font-medium leading-relaxed mb-3">{{ venue.description }}</p>
+
+              <div class="flex items-center gap-3 flex-wrap mb-4">
+                <span class="text-sm font-bold text-slate-700">
+                  Rs. {{ venue.pricePerHour.toLocaleString() }} <span class="text-xs font-medium text-slate-400">/ hr</span>
+                </span>
+                <span class="text-xs font-bold text-green-600">
+                  {{ getAvailableCount(venue) }} slots available
+                </span>
+              </div>
+
+              <!-- Time Slots -->
+              <div class="neo-shadow-inset rounded-xl p-3 mt-auto">
+                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2">Time Slots</p>
+                <div class="flex flex-wrap gap-1.5">
+                  @for (slot of venue.availableSlots; track slot.startTime) {
+                    <button
+                      class="px-2.5 py-1 rounded-lg text-[11px] font-bold transition-all duration-200"
+                      [class]="
+                        !slot.available
+                          ? 'bg-slate-200/60 text-slate-400 cursor-not-allowed line-through'
+                          : isSlotSelected(venue.id, slotKey(slot))
+                            ? 'bg-blue-600 text-white shadow-md'
+                            : 'neo-button text-slate-600 hover:text-blue-600 cursor-pointer'
+                      "
+                      [disabled]="!slot.available"
+                      (click)="selectSlot(venue.id, slotKey(slot))"
+                      [pTooltip]="slot.available ? formatSlotRange(slot) : 'Unavailable'"
+                      tooltipPosition="top"
+                    >
+                      {{ formatSlotRange(slot) }}
+                    </button>
+                  }
+                </div>
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+    }
+  } @else {
+    <!-- Trending Venues (default) -->
+    <h2 class="text-2xl font-bold text-slate-800 mb-6">Trending Venues</h2>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      @for (venue of trendingVenues; track venue.id) {
+        <div class="neo-bg neo-shadow rounded-2xl overflow-hidden flex flex-col">
+          <!-- Venue Image -->
+          <div class="h-44 overflow-hidden">
+            <img [src]="venue.image" [alt]="venue.name" class="w-full h-full object-cover" />
+          </div>
+
+          <!-- Venue Info -->
+          <div class="p-5 flex flex-col flex-1">
+            <div class="flex items-start justify-between mb-2">
+              <div>
+                <h3 class="font-extrabold text-slate-800 text-lg leading-tight">{{ venue.name }}</h3>
+                <p class="text-slate-500 text-sm font-medium flex items-center gap-1 mt-1">
+                  <i class="pi pi-map-marker text-xs"></i>
+                  {{ venue.location }}
+                </p>
+              </div>
+              <div class="neo-shadow-inset px-2.5 py-1 rounded-lg flex flex-col items-center gap-0.5">
+                <div class="flex items-center gap-1">
+                  <i class="pi pi-star-fill text-yellow-500 text-xs"></i>
+                  <span class="text-sm font-bold text-slate-700">{{ venue.rating }}</span>
+                </div>
+                <span class="text-[10px] text-slate-400 font-medium">{{ venue.totalRatings }} ratings</span>
+              </div>
+            </div>
+
+            <p class="text-slate-500 text-sm font-medium leading-relaxed mb-3">{{ venue.description }}</p>
+
+            <div class="flex items-center gap-3 flex-wrap mb-4">
+              <span class="text-sm font-bold text-slate-700">
+                Rs. {{ venue.pricePerHour.toLocaleString() }} <span class="text-xs font-medium text-slate-400">/ hr</span>
+              </span>
+              <span class="text-xs font-bold text-green-600">
+                {{ getAvailableCount(venue) }} slots available
+              </span>
+            </div>
+
+            <!-- Time Slots -->
+            <div class="neo-shadow-inset rounded-xl p-3 mt-auto">
+              <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2">Time Slots</p>
+              <div class="flex flex-wrap gap-1.5">
+                @for (slot of venue.availableSlots; track slot.startTime) {
+                  <button
+                    class="px-2.5 py-1 rounded-lg text-[11px] font-bold transition-all duration-200"
+                    [class]="
+                      !slot.available
+                        ? 'bg-slate-200/60 text-slate-400 cursor-not-allowed line-through'
+                        : 'neo-button text-slate-600 hover:text-blue-600 cursor-pointer'
+                    "
+                    [disabled]="!slot.available"
+                    [pTooltip]="slot.available ? formatSlotRange(slot) : 'Unavailable'"
+                    tooltipPosition="top"
+                  >
+                    {{ formatSlotRange(slot) }}
+                  </button>
+                }
+              </div>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+  }
+</section>

@@ -1,0 +1,38 @@
+/* You can add global styles to this file, and also import other style files */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+@import "primeicons/primeicons.css";
+@layer utilities {
+  .neo-bg {
+    background-color: #e0e5ec;
+  }
+  .neo-shadow {
+    box-shadow: 9px 9px 16px rgb(163, 177, 198, 0.6), -9px -9px 16px rgba(255, 255, 255, 0.5);
+  }
+  .neo-shadow-inset {
+    box-shadow: inset 6px 6px 10px 0 rgba(163, 177, 198, 0.7), inset -6px -6px 10px 0 rgba(255, 255, 255, 0.8);
+  }
+  .neo-button {
+    background-color: #e0e5ec;
+    box-shadow: 9px 9px 16px rgb(163, 177, 198, 0.6), -9px -9px 16px rgba(255, 255, 255, 0.5);
+    transition: all 0.2s ease-in-out;
+    border: none;
+    outline: none;
+  }
+  .neo-button:active {
+    box-shadow: inset 6px 6px 10px 0 rgba(163, 177, 198, 0.7), inset -6px -6px 10px 0 rgba(255, 255, 255, 0.8);
+  }
+  .neo-input {
+    background-color: #e0e5ec;
+    box-shadow: inset 6px 6px 10px 0 rgba(163, 177, 198, 0.7), inset -6px -6px 10px 0 rgba(255, 255, 255, 0.8);
+    border: none;
+    outline: none;
+  }
+}
+
+body {
+  background-color: #e0e5ec;
+  color: #4a5568;
+  font-family: 'Inter', sans-serif; /* Fallback, tailwind will handle */
+}

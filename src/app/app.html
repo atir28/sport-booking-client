@@ -1,0 +1,19 @@
+<div class="neo-bg h-screen flex flex-col text-slate-700 overflow-hidden">
+  @if (showHeader) {
+    <app-header
+      [showToggle]="showToggle"
+      (toggleSidebar)="isSidebarVisible.set(!isSidebarVisible())"
+      class="z-20 shrink-0"
+    ></app-header>
+  }
+
+  <div class="flex flex-1 overflow-hidden">
+    @if (showSidebar) {
+      <app-side-bar class="w-64 h-full shrink-0 z-10 neo-shadow bg-[#e0e5ec] overflow-y-auto transition-all duration-300"></app-side-bar>
+    }
+
+    <main class="flex-1 h-full overflow-y-auto w-full pb-8">
+      <router-outlet />
+    </main>
+  </div>
+</div>

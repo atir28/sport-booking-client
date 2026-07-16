@@ -1,0 +1,483 @@
+<div class="h-screen flex items-center justify-center px-4 overflow-hidden">
+  <div class="w-full" [class]="isVenueOwner ? 'max-w-2xl' : 'max-w-sm'">
+    <!-- Logo -->
+    <div class="text-center mb-3">
+      <a routerLink="/" class="text-2xl font-extrabold tracking-tight text-blue-600 no-underline">
+        SportVenue
+      </a>
+    </div>
+
+    <!-- Register Card -->
+    <div class="neo-bg neo-shadow rounded-3xl p-4 md:p-6">
+      <h1 class="text-xl md:text-2xl font-extrabold text-slate-800 text-center mb-1">
+        {{ isVenueOwner ? 'Register Your Venue' : 'Create an account' }}
+      </h1>
+      <p class="text-slate-500 text-center text-xs md:text-sm font-medium mb-4">
+        {{ isVenueOwner ? 'List your venue and start receiving bookings' : 'Join SportVenue and start booking' }}
+      </p>
+
+      <!-- ============================================ -->
+      <!-- NORMAL USER FORM                             -->
+      <!-- ============================================ -->
+      @if (!isVenueOwner) {
+        <form [formGroup]="userForm" (ngSubmit)="onRegister()" class="flex flex-col gap-3.5">
+
+          <!-- Full Name -->
+          <div>
+            <label class="block text-[10px] md:text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">
+              Full Name <span class="text-red-500">*</span>
+            </label>
+            <div class="relative isolate">
+              <input type="text" formControlName="name" placeholder="John Doe"
+                class="neo-input relative z-0 w-full pl-10 pr-4 py-2.5 md:py-3 rounded-xl text-sm md:text-base text-slate-700 font-medium placeholder-slate-400"
+                [class]="isFieldInvalid('name') ? 'ring-2 ring-red-400' : ''" />
+              <i class="pi pi-user absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm z-10 pointer-events-none"></i>
+            </div>
+            @if (hasError('name', 'required')) {
+              <div class="mt-1 text-[11px] text-red-500 font-medium">Full name is required</div>
+            } @else if (hasError('name', 'minlength')) {
+              <div class="mt-1 text-[11px] text-red-500 font-medium">Must be at least 2 characters</div>
+            }
+          </div>
+
+          <!-- Email -->
+          <div>
+            <label class="block text-[10px] md:text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">
+              Email <span class="text-red-500">*</span>
+            </label>
+            <div class="relative isolate">
+              <input type="email" formControlName="email" placeholder="you@example.com"
+                class="neo-input relative z-0 w-full pl-10 pr-4 py-2.5 md:py-3 rounded-xl text-sm md:text-base text-slate-700 font-medium placeholder-slate-400"
+                [class]="isFieldInvalid('email') ? 'ring-2 ring-red-400' : ''" />
+              <i class="pi pi-envelope absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm z-10 pointer-events-none"></i>
+            </div>
+            @if (hasError('email', 'required')) {
+              <div class="mt-1 text-[11px] text-red-500 font-medium">Email is required</div>
+            } @else if (hasError('email', 'email')) {
+              <div class="mt-1 text-[11px] text-red-500 font-medium">Enter a valid email</div>
+            }
+          </div>
+
+          <!-- Phone -->
+          <div>
+            <label class="block text-[10px] md:text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">
+              Phone <span class="text-red-500">*</span>
+            </label>
+            <div class="relative isolate">
+              <input type="tel" formControlName="phone" placeholder="+977 9800000000"
+                class="neo-input relative z-0 w-full pl-10 pr-4 py-2.5 md:py-3 rounded-xl text-sm md:text-base text-slate-700 font-medium placeholder-slate-400"
+                [class]="isFieldInvalid('phone') ? 'ring-2 ring-red-400' : ''" />
+              <i class="pi pi-phone absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm z-10 pointer-events-none"></i>
+            </div>
+            @if (hasError('phone', 'required')) {
+              <div class="mt-1 text-[11px] text-red-500 font-medium">Phone is required</div>
+            } @else if (hasError('phone', 'pattern')) {
+              <div class="mt-1 text-[11px] text-red-500 font-medium">Enter a valid phone number</div>
+            }
+          </div>
+
+          <!-- Password -->
+          <div>
+            <label class="block text-[10px] md:text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">
+              Password <span class="text-red-500">*</span>
+            </label>
+            <div class="relative isolate">
+              <input [type]="showPassword ? 'text' : 'password'" formControlName="password" placeholder="Create password"
+                class="neo-input relative z-0 w-full pl-10 pr-10 py-2.5 md:py-3 rounded-xl text-sm md:text-base text-slate-700 font-medium placeholder-slate-400"
+                [class]="isFieldInvalid('password') ? 'ring-2 ring-red-400' : ''" />
+              <i class="pi pi-lock absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm z-10 pointer-events-none"></i>
+              <button type="button" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-700 transition-colors z-20 cursor-pointer" (click)="showPassword = !showPassword">
+                <i [class]="showPassword ? 'pi pi-eye-slash text-base' : 'pi pi-eye text-base'"></i>
+              </button>
+            </div>
+            @if (hasError('password', 'required')) {
+              <div class="mt-1 text-[11px] text-red-500 font-medium">Password is required</div>
+            } @else if (hasError('password', 'minlength')) {
+              <div class="mt-1 text-[11px] text-red-500 font-medium">Must be at least 6 characters</div>
+            }
+          </div>
+
+          <!-- Confirm Password -->
+          <div>
+            <label class="block text-[10px] md:text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">
+              Confirm Password <span class="text-red-500">*</span>
+            </label>
+            <div class="relative isolate">
+              <input [type]="showConfirmPassword ? 'text' : 'password'" formControlName="confirmPassword" placeholder="Confirm password"
+                class="neo-input relative z-0 w-full pl-10 pr-10 py-2.5 md:py-3 rounded-xl text-sm md:text-base text-slate-700 font-medium placeholder-slate-400"
+                [class]="isFieldInvalid('confirmPassword') ? 'ring-2 ring-red-400' : ''" />
+              <i class="pi pi-lock absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm z-10 pointer-events-none"></i>
+              <button type="button" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-700 transition-colors z-20 cursor-pointer" (click)="showConfirmPassword = !showConfirmPassword">
+                <i [class]="showConfirmPassword ? 'pi pi-eye-slash text-base' : 'pi pi-eye text-base'"></i>
+              </button>
+            </div>
+            @if (hasError('confirmPassword', 'required')) {
+              <div class="mt-1 text-[11px] text-red-500 font-medium">Please confirm your password</div>
+            } @else if (hasError('confirmPassword', 'passwordMismatch')) {
+              <div class="mt-1 text-[11px] text-red-500 font-medium">Passwords do not match</div>
+            }
+          </div>
+
+          <!-- Terms -->
+          <div class="flex items-start gap-2">
+            <input type="checkbox" formControlName="agreedToTerms" class="mt-0.5 w-3.5 h-3.5 rounded accent-blue-600" />
+            <span class="text-xs text-slate-500 font-medium leading-snug">
+              I agree to the
+              <a href="#" class="text-blue-600 font-bold hover:text-blue-700 no-underline">Terms</a>
+              and
+              <a href="#" class="text-blue-600 font-bold hover:text-blue-700 no-underline">Privacy Policy</a>
+            </span>
+          </div>
+          @if (hasError('agreedToTerms', 'required')) {
+            <div class="text-[11px] text-red-500 font-medium -mt-2">You must agree to the terms</div>
+          }
+
+          <!-- Submit -->
+          <button type="submit" [disabled]="userForm.invalid"
+            class="py-2.5 md:py-3 rounded-xl font-bold text-sm md:text-base transition-colors w-full cursor-pointer"
+            [class]="userForm.valid ? 'bg-blue-600 text-white hover:bg-blue-700 shadow-md hover:shadow-lg' : 'bg-slate-300 text-slate-500 cursor-not-allowed'">
+            Create Account
+          </button>
+        </form>
+      }
+
+      <!-- ============================================ -->
+      <!-- VENUE OWNER FORM                             -->
+      <!-- ============================================ -->
+      @if (isVenueOwner) {
+        <form [formGroup]="venueForm" (ngSubmit)="onRegister()" class="flex flex-col gap-3 venue-scroll pr-1">
+
+          <!-- Account Details -->
+          <div class="text-[10px] font-bold text-blue-500 uppercase tracking-wider border-b border-slate-200 pb-1">Account Details</div>
+
+          <!-- Owner Name -->
+          <div>
+            <label class="block text-[10px] md:text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">
+              Owner Name <span class="text-red-500">*</span>
+            </label>
+            <div class="relative isolate">
+              <input type="text" formControlName="ownerName" placeholder="Your full name"
+                class="neo-input relative z-0 w-full pl-10 pr-4 py-2.5 rounded-xl text-sm text-slate-700 font-medium placeholder-slate-400"
+                [class]="isFieldInvalid('ownerName') ? 'ring-2 ring-red-400' : ''" />
+              <i class="pi pi-user absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm z-10 pointer-events-none"></i>
+            </div>
+            @if (hasError('ownerName', 'required')) {
+              <div class="mt-1 text-[11px] text-red-500 font-medium">Name is required</div>
+            } @else if (hasError('ownerName', 'minlength')) {
+              <div class="mt-1 text-[11px] text-red-500 font-medium">Must be at least 2 characters</div>
+            }
+          </div>
+
+          <!-- Email & Phone -->
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="block text-[10px] md:text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">
+                Email <span class="text-red-500">*</span>
+              </label>
+              <div class="relative isolate">
+                <input type="email" formControlName="email" placeholder="you@example.com"
+                  class="neo-input relative z-0 w-full pl-10 pr-4 py-2.5 rounded-xl text-sm text-slate-700 font-medium placeholder-slate-400"
+                  [class]="isFieldInvalid('email') ? 'ring-2 ring-red-400' : ''" />
+                <i class="pi pi-envelope absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm z-10 pointer-events-none"></i>
+              </div>
+              @if (hasError('email', 'required')) {
+                <div class="mt-1 text-[11px] text-red-500 font-medium">Email is required</div>
+              } @else if (hasError('email', 'email')) {
+                <div class="mt-1 text-[11px] text-red-500 font-medium">Enter a valid email</div>
+              }
+            </div>
+            <div>
+              <label class="block text-[10px] md:text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">
+                Phone <span class="text-red-500">*</span>
+              </label>
+              <div class="relative isolate">
+                <input type="tel" formControlName="phone" placeholder="+977 9800000000"
+                  class="neo-input relative z-0 w-full pl-10 pr-4 py-2.5 rounded-xl text-sm text-slate-700 font-medium placeholder-slate-400"
+                  [class]="isFieldInvalid('phone') ? 'ring-2 ring-red-400' : ''" />
+                <i class="pi pi-phone absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm z-10 pointer-events-none"></i>
+              </div>
+              @if (hasError('phone', 'required')) {
+                <div class="mt-1 text-[11px] text-red-500 font-medium">Phone is required</div>
+              } @else if (hasError('phone', 'pattern')) {
+                <div class="mt-1 text-[11px] text-red-500 font-medium">Enter a valid phone number</div>
+              }
+            </div>
+          </div>
+
+          <!-- Password & Confirm -->
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="block text-[10px] md:text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">
+                Password <span class="text-red-500">*</span>
+              </label>
+              <div class="relative isolate">
+                <input [type]="showPassword ? 'text' : 'password'" formControlName="password" placeholder="Create password"
+                  class="neo-input relative z-0 w-full pl-10 pr-10 py-2.5 rounded-xl text-sm text-slate-700 font-medium placeholder-slate-400"
+                  [class]="isFieldInvalid('password') ? 'ring-2 ring-red-400' : ''" />
+                <i class="pi pi-lock absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm z-10 pointer-events-none"></i>
+                <button type="button" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-700 transition-colors z-20 cursor-pointer" (click)="showPassword = !showPassword">
+                  <i [class]="showPassword ? 'pi pi-eye-slash text-base' : 'pi pi-eye text-base'"></i>
+                </button>
+              </div>
+              @if (hasError('password', 'required')) {
+                <div class="mt-1 text-[11px] text-red-500 font-medium">Password is required</div>
+              } @else if (hasError('password', 'minlength')) {
+                <div class="mt-1 text-[11px] text-red-500 font-medium">Must be at least 6 characters</div>
+              }
+            </div>
+            <div>
+              <label class="block text-[10px] md:text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">
+                Confirm <span class="text-red-500">*</span>
+              </label>
+              <div class="relative isolate">
+                <input [type]="showConfirmPassword ? 'text' : 'password'" formControlName="confirmPassword" placeholder="Confirm password"
+                  class="neo-input relative z-0 w-full pl-10 pr-10 py-2.5 rounded-xl text-sm text-slate-700 font-medium placeholder-slate-400"
+                  [class]="isFieldInvalid('confirmPassword') ? 'ring-2 ring-red-400' : ''" />
+                <i class="pi pi-lock absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm z-10 pointer-events-none"></i>
+                <button type="button" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-700 transition-colors z-20 cursor-pointer" (click)="showConfirmPassword = !showConfirmPassword">
+                  <i [class]="showConfirmPassword ? 'pi pi-eye-slash text-base' : 'pi pi-eye text-base'"></i>
+                </button>
+              </div>
+              @if (hasError('confirmPassword', 'required')) {
+                <div class="mt-1 text-[11px] text-red-500 font-medium">Please confirm your password</div>
+              } @else if (hasError('confirmPassword', 'passwordMismatch')) {
+                <div class="mt-1 text-[11px] text-red-500 font-medium">Passwords do not match</div>
+              }
+            </div>
+          </div>
+
+          <!-- Venue Details -->
+          <div class="text-[10px] font-bold text-blue-500 uppercase tracking-wider pt-1 border-t border-slate-200">Venue Details</div>
+
+          <!-- Venue Name -->
+          <div>
+            <label class="block text-[10px] md:text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">
+              Venue Name <span class="text-red-500">*</span>
+            </label>
+            <div class="relative isolate">
+              <input type="text" formControlName="venueName" placeholder="e.g. Downtown Turf Arena"
+                class="neo-input relative z-0 w-full pl-10 pr-4 py-2.5 rounded-xl text-sm text-slate-700 font-medium placeholder-slate-400"
+                [class]="isFieldInvalid('venueName') ? 'ring-2 ring-red-400' : ''" />
+              <i class="pi pi-building absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm z-10 pointer-events-none"></i>
+            </div>
+            @if (hasError('venueName', 'required')) {
+              <div class="mt-1 text-[11px] text-red-500 font-medium">Venue name is required</div>
+            } @else if (hasError('venueName', 'minlength')) {
+              <div class="mt-1 text-[11px] text-red-500 font-medium">Must be at least 3 characters</div>
+            }
+          </div>
+
+          <!-- Venue Type -->
+          <div>
+            <label class="block text-[10px] md:text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">
+              Venue Type <span class="text-red-500">*</span>
+            </label>
+            <div class="flex flex-wrap gap-2">
+              @for (opt of venueTypeOptions; track opt.value) {
+                <button type="button"
+                  class="px-3 py-1.5 rounded-lg text-xs font-bold transition-all duration-200 cursor-pointer"
+                  [class]="isVenueTypeSelected(opt.value) ? 'bg-blue-600 text-white shadow-md' : 'neo-button text-slate-600 hover:text-blue-600'"
+                  (click)="toggleVenueType(opt.value)">
+                  {{ opt.label }}
+                </button>
+              }
+            </div>
+            @if (hasError('venueType', 'required') || hasError('venueType', 'atLeastOne')) {
+              <div class="mt-1 text-[11px] text-red-500 font-medium">Select at least one venue type</div>
+            }
+          </div>
+
+          <!-- Location -->
+          <div class="text-[10px] font-bold text-blue-500 uppercase tracking-wider pt-1 border-t border-slate-200">Location</div>
+
+          <!-- Province & District -->
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="block text-[10px] md:text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">
+                Province <span class="text-red-500">*</span>
+              </label>
+              <div class="relative isolate">
+                <select formControlName="state"
+                  class="neo-input relative z-0 w-full pl-10 pr-4 py-2.5 rounded-xl text-sm text-slate-700 font-medium appearance-none"
+                  [class]="isFieldInvalid('state') ? 'ring-2 ring-red-400' : ''"
+                  (change)="onStateChange()">
+                  <option value="">Select province</option>
+                  @for (opt of stateOptions; track opt.value) {
+                    <option [value]="opt.value">{{ opt.label }}</option>
+                  }
+                </select>
+                <i class="pi pi-map absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm z-10 pointer-events-none"></i>
+              </div>
+              @if (hasError('state', 'required')) {
+                <div class="mt-1 text-[11px] text-red-500 font-medium">Province is required</div>
+              }
+            </div>
+            <div>
+              <label class="block text-[10px] md:text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">
+                District <span class="text-red-500">*</span>
+              </label>
+              <div class="relative isolate">
+                <select formControlName="district"
+                  class="neo-input relative z-0 w-full pl-10 pr-4 py-2.5 rounded-xl text-sm text-slate-700 font-medium appearance-none"
+                  [class]="isFieldInvalid('district') ? 'ring-2 ring-red-400' : ''">
+                  <option value="">Select district</option>
+                  @for (d of districts; track d) {
+                    <option [value]="d">{{ d }}</option>
+                  }
+                </select>
+                <i class="pi pi-map-marker absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm z-10 pointer-events-none"></i>
+              </div>
+              @if (hasError('district', 'required')) {
+                <div class="mt-1 text-[11px] text-red-500 font-medium">District is required</div>
+              }
+            </div>
+          </div>
+
+          <!-- Street -->
+          <div>
+            <label class="block text-[10px] md:text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">
+              Street / Area <span class="text-red-500">*</span>
+            </label>
+            <div class="relative isolate">
+              <input type="text" formControlName="street" placeholder="e.g. Baneshwor, Sinamangal"
+                class="neo-input relative z-0 w-full pl-10 pr-4 py-2.5 rounded-xl text-sm text-slate-700 font-medium placeholder-slate-400"
+                [class]="isFieldInvalid('street') ? 'ring-2 ring-red-400' : ''" />
+              <i class="pi pi-directions absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm z-10 pointer-events-none"></i>
+            </div>
+            @if (hasError('street', 'required')) {
+              <div class="mt-1 text-[11px] text-red-500 font-medium">Street / area is required</div>
+            }
+          </div>
+
+          <!-- Google Map -->
+          <div>
+            <label class="block text-[10px] md:text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">
+              Google Maps Link <span class="text-red-500">*</span>
+            </label>
+            <div class="relative isolate">
+              <input type="url" formControlName="mapLocation" placeholder="Paste Google Maps location URL"
+                class="neo-input relative z-0 w-full pl-10 pr-4 py-2.5 rounded-xl text-sm text-slate-700 font-medium placeholder-slate-400"
+                [class]="isFieldInvalid('mapLocation') ? 'ring-2 ring-red-400' : ''" />
+              <i class="pi pi-external-link absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm z-10 pointer-events-none"></i>
+            </div>
+            @if (hasError('mapLocation', 'required')) {
+              <div class="mt-1 text-[11px] text-red-500 font-medium">Google Maps link is required</div>
+            }
+          </div>
+
+          <!-- Courts -->
+          @if (venueForm.get('venueType')?.value?.length > 0) {
+            <div class="text-[10px] font-bold text-blue-500 uppercase tracking-wider pt-1 border-t border-slate-200">Number of Courts</div>
+
+            <div class="grid grid-cols-3 gap-3">
+              @if (showCourtField('Futsal')) {
+                <div>
+                  <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1">
+                    Futsal <span class="text-red-500">*</span>
+                  </label>
+                  <div class="relative isolate">
+                    <input type="number" formControlName="futsalCourts" min="1" max="50"
+                      class="neo-input relative z-0 w-full pl-3 pr-2 py-2.5 rounded-xl text-sm text-slate-700 font-medium text-center"
+                      [class]="hasCourtError('futsal') ? 'ring-2 ring-red-400' : ''" />
+                  </div>
+                  @if (hasCourtError('futsal')) {
+                    <div class="mt-1 text-[11px] text-red-500 font-medium">Required</div>
+                  }
+                </div>
+              }
+              @if (showCourtField('Badminton')) {
+                <div>
+                  <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1">
+                    Badminton <span class="text-red-500">*</span>
+                  </label>
+                  <div class="relative isolate">
+                    <input type="number" formControlName="badmintonCourts" min="1" max="50"
+                      class="neo-input relative z-0 w-full pl-3 pr-2 py-2.5 rounded-xl text-sm text-slate-700 font-medium text-center"
+                      [class]="hasCourtError('badminton') ? 'ring-2 ring-red-400' : ''" />
+                  </div>
+                  @if (hasCourtError('badminton')) {
+                    <div class="mt-1 text-[11px] text-red-500 font-medium">Required</div>
+                  }
+                </div>
+              }
+              @if (showCourtField('Cricket')) {
+                <div>
+                  <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1">
+                    Cricket <span class="text-red-500">*</span>
+                  </label>
+                  <div class="relative isolate">
+                    <input type="number" formControlName="cricketCourts" min="1" max="50"
+                      class="neo-input relative z-0 w-full pl-3 pr-2 py-2.5 rounded-xl text-sm text-slate-700 font-medium text-center"
+                      [class]="hasCourtError('cricket') ? 'ring-2 ring-red-400' : ''" />
+                  </div>
+                  @if (hasCourtError('cricket')) {
+                    <div class="mt-1 text-[11px] text-red-500 font-medium">Required</div>
+                  }
+                </div>
+              }
+            </div>
+          }
+
+          <!-- Amenities -->
+          <div class="text-[10px] font-bold text-blue-500 uppercase tracking-wider pt-1 border-t border-slate-200">Amenities & Facilities</div>
+
+          <div class="grid grid-cols-3 gap-2">
+            @for (opt of amenityOptions; track opt.key) {
+              <button type="button"
+                class="flex items-center justify-center gap-1.5 px-2 py-2 rounded-lg text-[11px] font-bold transition-all duration-200 cursor-pointer"
+                [class]="isAmenitySelected(opt.key) ? 'bg-blue-600 text-white shadow-md' : 'neo-button text-slate-600 hover:text-blue-600'"
+                (click)="toggleAmenity(opt.key)">
+                <i [class]="opt.icon + ' text-[10px]'"></i>
+                {{ opt.label }}
+              </button>
+            }
+          </div>
+
+          <!-- Description -->
+          <div>
+            <label class="block text-[10px] md:text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">
+              Description <span class="text-red-500">*</span>
+            </label>
+            <textarea formControlName="description" rows="2" placeholder="Tell us about your venue..."
+              class="neo-input w-full px-4 py-2.5 rounded-xl text-sm text-slate-700 font-medium placeholder-slate-400 resize-none"
+              [class]="isFieldInvalid('description') ? 'ring-2 ring-red-400' : ''"></textarea>
+            @if (hasError('description', 'required')) {
+              <div class="mt-1 text-[11px] text-red-500 font-medium">Description is required</div>
+            } @else if (hasError('description', 'minlength')) {
+              <div class="mt-1 text-[11px] text-red-500 font-medium">Must be at least 10 characters</div>
+            }
+          </div>
+
+          <!-- Terms -->
+          <div class="flex items-start gap-2">
+            <input type="checkbox" formControlName="agreedToTerms" class="mt-0.5 w-3.5 h-3.5 rounded accent-blue-600" />
+            <span class="text-xs text-slate-500 font-medium leading-snug">
+              I agree to the
+              <a href="#" class="text-blue-600 font-bold hover:text-blue-700 no-underline">Terms</a>
+              and
+              <a href="#" class="text-blue-600 font-bold hover:text-blue-700 no-underline">Privacy Policy</a>
+            </span>
+          </div>
+          @if (hasError('agreedToTerms', 'required')) {
+            <div class="text-[11px] text-red-500 font-medium -mt-2">You must agree to the terms</div>
+          }
+
+          <!-- Submit -->
+          <button type="submit" [disabled]="venueForm.invalid"
+            class="py-2.5 md:py-3 rounded-xl font-bold text-sm md:text-base transition-colors w-full cursor-pointer"
+            [class]="venueForm.valid ? 'bg-blue-600 text-white hover:bg-blue-700 shadow-md hover:shadow-lg' : 'bg-slate-300 text-slate-500 cursor-not-allowed'">
+            Register Venue
+          </button>
+        </form>
+      }
+
+      <!-- Login Link -->
+      <p class="text-center text-xs md:text-sm text-slate-500 font-medium mt-3">
+        Already have an account?
+        <a routerLink="/auth/login" class="text-blue-600 font-bold hover:text-blue-700 no-underline transition-colors ml-1">
+          Sign in
+        </a>
+      </p>
+    </div>
+  </div>
+</div>
