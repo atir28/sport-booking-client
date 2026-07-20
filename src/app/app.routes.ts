@@ -1,9 +1,13 @@
 import { Routes } from '@angular/router';
 import { HomeComponent } from './features/home/home';
-import { CustomerDashboardComponent } from './features/customer/pages/customer-dashboard/customer-dashboard';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
+  {
+    path: 'venue/:id',
+    loadComponent: () =>
+      import('./features/venue/pages/venue-details/venue-details').then((m) => m.VenueDetailsComponent),
+  },
   {
     path: 'user',
     loadChildren: () =>

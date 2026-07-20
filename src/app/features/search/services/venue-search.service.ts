@@ -239,4 +239,8 @@ export class VenueSearchService {
       return matchesQuery && matchesSport;
     });
   }
+
+  getVenueById(id: string): Venue | undefined {
+    return this.venues.find(v => v.id === id);
+  }
 }

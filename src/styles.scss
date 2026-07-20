@@ -3,6 +3,7 @@
 @tailwind components;
 @tailwind utilities;
 @import "primeicons/primeicons.css";
+
 @layer utilities {
   .neo-bg {
     background-color: #e0e5ec;
@@ -34,5 +35,336 @@
 body {
   background-color: #e0e5ec;
   color: #4a5568;
-  font-family: 'Inter', sans-serif; /* Fallback, tailwind will handle */
+  font-family: 'Inter', sans-serif;
+}
+
+/* ============================================
+   PrimeNG Select — Neomorphic Theme
+   ============================================ */
+.p-select {
+  background-color: #e0e5ec !important;
+  box-shadow: inset 6px 6px 10px 0 rgba(163, 177, 198, 0.7), inset -6px -6px 10px 0 rgba(255, 255, 255, 0.8) !important;
+  border: none !important;
+  border-radius: 0.75rem !important;
+  padding: 0.625rem 0.75rem !important;
+  min-height: 2.75rem;
+  max-height: 3rem;
+  transition: all 0.2s ease;
+}
+
+.p-select:hover {
+  box-shadow: inset 4px 4px 8px 0 rgba(163, 177, 198, 0.6), inset -4px -4px 8px 0 rgba(255, 255, 255, 0.7) !important;
+}
+
+.p-select.p-focus {
+  box-shadow: inset 6px 6px 10px 0 rgba(163, 177, 198, 0.7), inset -6px -6px 10px 0 rgba(255, 255, 255, 0.8), 0 0 0 2px #3b82f6 !important;
+}
+
+.p-select .p-select-label {
+  color: #475569 !important;
+  font-weight: 500;
+  font-size: 0.875rem;
+}
+
+.p-select .p-select-label.p-placeholder {
+  color: #94a3b8 !important;
+  font-weight: 500;
+}
+
+.p-select .p-select-dropdown {
+  width: 2rem !important;
+  background: transparent !important;
+}
+
+.p-select .p-select-dropdown-icon {
+  color: #94a3b8 !important;
+  font-size: 0.75rem;
+}
+
+/* Select Dropdown Panel */
+.p-select-panel {
+  background-color: #e0e5ec !important;
+  box-shadow: 9px 9px 16px rgb(163, 177, 198, 0.6), -9px -9px 16px rgba(255, 255, 255, 0.5) !important;
+  border: none !important;
+  border-radius: 0.75rem !important;
+  padding: 0.375rem !important;
+}
+
+.p-select-panel .p-select-filter {
+  background-color: #e0e5ec !important;
+  box-shadow: inset 4px 4px 8px 0 rgba(163, 177, 198, 0.6), inset -4px -4px 8px 0 rgba(255, 255, 255, 0.7) !important;
+  border: none !important;
+  border-radius: 0.5rem !important;
+  padding: 0.5rem 0.75rem !important;
+  color: #475569 !important;
+  font-size: 0.8125rem;
+  font-weight: 500;
+}
+
+.p-select-panel .p-select-filter::placeholder {
+  color: #94a3b8 !important;
+}
+
+.p-select-panel .p-select-filter-icon {
+  color: #94a3b8 !important;
+}
+
+.p-select-items {
+  padding: 0 !important;
+}
+
+.p-select-item {
+  color: #475569 !important;
+  font-weight: 500;
+  font-size: 0.8125rem;
+  padding: 0.5rem 0.75rem !important;
+  border-radius: 0.5rem !important;
+  margin-bottom: 2px;
+  transition: all 0.15s ease;
+}
+
+.p-select-item:hover {
+  background-color: rgba(59, 130, 246, 0.08) !important;
+  color: #2563eb !important;
+}
+
+.p-select-item.p-highlight {
+  background-color: #3b82f6 !important;
+  color: #ffffff !important;
+  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3) !important;
+}
+
+.p-select-item.p-highlight:hover {
+  background-color: #2563eb !important;
+  color: #ffffff !important;
+}
+
+/* ============================================
+   PrimeNG DatePicker — Neomorphic Theme
+   ============================================ */
+.p-datepicker {
+  background-color: #e0e5ec !important;
+  box-shadow: inset 6px 6px 10px 0 rgba(163, 177, 198, 0.7), inset -6px -6px 10px 0 rgba(255, 255, 255, 0.8) !important;
+  border: none !important;
+  border-radius: 0.75rem !important;
+}
+
+.p-datepicker:not(.p-disabled):hover {
+  box-shadow: inset 4px 4px 8px 0 rgba(163, 177, 198, 0.6), inset -4px -4px 8px 0 rgba(255, 255, 255, 0.7) !important;
+}
+
+.p-datepicker.p-focus {
+  box-shadow: inset 6px 6px 10px 0 rgba(163, 177, 198, 0.7), inset -6px -6px 10px 0 rgba(255, 255, 255, 0.8), 0 0 0 2px #3b82f6 !important;
+}
+
+.p-datepicker input {
+  background: transparent !important;
+  color: #475569 !important;
+  font-weight: 500;
+}
+
+.p-datepicker input::placeholder {
+  color: #94a3b8 !important;
+  font-weight: 500;
+}
+
+.p-datepicker .p-datepicker-trigger {
+  background: transparent !important;
+  border: none !important;
+  width: 2.5rem !important;
+}
+
+.p-datepicker .p-datepicker-trigger-icon {
+  color: #94a3b8 !important;
+  font-size: 0.875rem;
+}
+
+.p-datepicker.p-disabled {
+  opacity: 0.5;
+}
+
+.p-datepicker.p-disabled input {
+  cursor: not-allowed !important;
+}
+
+/* DatePicker Dropdown Panel */
+.p-datepicker-panel {
+  background-color: #e0e5ec !important;
+  box-shadow: 9px 9px 16px rgb(163, 177, 198, 0.6), -9px -9px 16px rgba(255, 255, 255, 0.5) !important;
+  border: none !important;
+  border-radius: 0.75rem !important;
+  padding: 0.5rem !important;
+}
+
+.p-datepicker-panel .p-datepicker-header {
+  background: transparent !important;
+  border-bottom: 1px solid rgba(163, 177, 198, 0.3) !important;
+  padding: 0.5rem !important;
+}
+
+.p-datepicker-panel .p-datepicker-title {
+  color: #334155 !important;
+  font-weight: 700;
+}
+
+.p-datepicker-panel .p-datepicker-prev,
+.p-datepicker-panel .p-datepicker-next {
+  color: #64748b !important;
+  border-radius: 0.5rem !important;
+  width: 2rem !important;
+  height: 2rem !important;
+}
+
+.p-datepicker-panel .p-datepicker-prev:hover,
+.p-datepicker-panel .p-datepicker-next:hover {
+  background-color: rgba(59, 130, 246, 0.1) !important;
+  color: #2563eb !important;
+}
+
+.p-datepicker-panel .p-datepicker-day {
+  color: #475569 !important;
+  font-weight: 500;
+  border-radius: 0.5rem !important;
+  width: 2.25rem !important;
+  height: 2.25rem !important;
+  line-height: 2.25rem !important;
+  transition: all 0.15s ease;
+}
+
+.p-datepicker-panel .p-datepicker-day:hover {
+  background-color: rgba(59, 130, 246, 0.08) !important;
+  color: #2563eb !important;
+}
+
+.p-datepicker-panel .p-datepicker-day.p-highlight {
+  background-color: #3b82f6 !important;
+  color: #ffffff !important;
+  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3) !important;
+}
+
+.p-datepicker-panel .p-datepicker-day.p-highlight:hover {
+  background-color: #2563eb !important;
+}
+
+.p-datepicker-panel .p-datepicker-weekday {
+  color: #94a3b8 !important;
+  font-weight: 700;
+  font-size: 0.6875rem;
+  text-transform: uppercase;
+  padding: 0.5rem 0;
+}
+
+.p-datepicker-panel .p-datepicker-other-month {
+  color: #cbd5e1 !important;
+}
+
+/* ============================================
+   Search Panel Layout
+   ============================================ */
+
+/* ============================================
+   PrimeNG Slider — Neomorphic Theme
+   ============================================ */
+.p-slider {
+  background: #e0e5ec !important;
+  box-shadow: inset 3px 3px 6px 0 rgba(163, 177, 198, 0.6), inset -3px -3px 6px 0 rgba(255, 255, 255, 0.7) !important;
+  border-radius: 9999px !important;
+  height: 6px !important;
+}
+
+.p-slider .p-slider-range {
+  background: #3b82f6 !important;
+  border-radius: 9999px !important;
+}
+
+.p-slider .p-slider-handle {
+  width: 18px !important;
+  height: 18px !important;
+  background: #3b82f6 !important;
+  border: 3px solid #e0e5ec !important;
+  box-shadow: 2px 2px 4px rgba(163, 177, 198, 0.6), -2px -2px 4px rgba(255, 255, 255, 0.5) !important;
+  border-radius: 50% !important;
+  top: 50% !important;
+  margin-top: -9px !important;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.p-slider .p-slider-handle:hover {
+  transform: scale(1.2) !important;
+  box-shadow: 3px 3px 6px rgba(163, 177, 198, 0.7), -3px -3px 6px rgba(255, 255, 255, 0.6) !important;
+}
+
+.p-slider .p-slider-handle:focus {
+  outline: none !important;
+  box-shadow: 2px 2px 4px rgba(163, 177, 198, 0.6), -2px -2px 4px rgba(255, 255, 255, 0.5), 0 0 0 3px rgba(59, 130, 246, 0.3) !important;
+}
+
+/* ============================================
+   PrimeNG Paginator — Neomorphic Theme
+   ============================================ */
+.p-paginator {
+  background: transparent !important;
+  border: none !important;
+  padding: 0.5rem 0 !important;
+}
+
+.p-paginator .p-paginator-pages .p-paginator-page {
+  background-color: #e0e5ec !important;
+  box-shadow: 3px 3px 6px rgb(163, 177, 198, 0.5), -3px -3px 6px rgba(255, 255, 255, 0.4) !important;
+  border: none !important;
+  border-radius: 0.5rem !important;
+  color: #64748b !important;
+  font-weight: 600 !important;
+  font-size: 0.75rem !important;
+  min-width: 2rem !important;
+  height: 2rem !important;
+  transition: all 0.15s ease;
+}
+
+.p-paginator .p-paginator-pages .p-paginator-page:hover {
+  background-color: rgba(59, 130, 246, 0.08) !important;
+  color: #2563eb !important;
+}
+
+.p-paginator .p-paginator-pages .p-paginator-page.p-highlight {
+  background-color: #3b82f6 !important;
+  color: #ffffff !important;
+  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3) !important;
+}
+
+.p-paginator .p-paginator-first,
+.p-paginator .p-paginator-prev,
+.p-paginator .p-paginator-next,
+.p-paginator .p-paginator-last {
+  background-color: #e0e5ec !important;
+  box-shadow: 3px 3px 6px rgb(163, 177, 198, 0.5), -3px -3px 6px rgba(255, 255, 255, 0.4) !important;
+  border: none !important;
+  border-radius: 0.5rem !important;
+  color: #64748b !important;
+  width: 2rem !important;
+  height: 2rem !important;
+  transition: all 0.15s ease;
+}
+
+.p-paginator .p-paginator-first:hover,
+.p-paginator .p-paginator-prev:hover,
+.p-paginator .p-paginator-next:hover,
+.p-paginator .p-paginator-last:hover {
+  background-color: rgba(59, 130, 246, 0.08) !important;
+  color: #2563eb !important;
+}
+
+.p-paginator .p-paginator-pages {
+  gap: 0.375rem !important;
+}
+
+.p-paginator-dropdown {
+  background-color: #e0e5ec !important;
+  box-shadow: inset 3px 3px 6px 0 rgba(163, 177, 198, 0.5), inset -3px -3px 6px 0 rgba(255, 255, 255, 0.6) !important;
+  border: none !important;
+  border-radius: 0.5rem !important;
+  color: #475569 !important;
+  font-weight: 500 !important;
+  font-size: 0.75rem !important;
+  padding: 0.25rem 0.5rem !important;
 }

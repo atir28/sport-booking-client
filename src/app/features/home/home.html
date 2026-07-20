@@ -1,19 +1,19 @@
 <!-- Hero Section -->
-<section class="relative pt-12 pb-16 px-4 md:px-8 flex flex-col items-center mt-18">
-  <div class="text-center z-10 max-w-3xl mb-8">
-    <h1 class="text-4xl md:text-5xl font-extrabold text-slate-800 mb-4 tracking-tight drop-shadow-sm">
+<section class="relative pt-10 pb-14 px-4 md:px-8 flex flex-col items-center mt-18">
+  <div class="text-center z-10 max-w-3xl mb-6">
+    <h1 class="text-3xl md:text-5xl font-extrabold text-slate-800 mb-3 tracking-tight drop-shadow-sm">
       Find your next sports venue
     </h1>
-    <p class="text-lg md:text-xl text-slate-600 font-medium">
+    <p class="text-base md:text-xl text-slate-600 font-medium">
       Search low prices on courts, fields, and much more...
     </p>
   </div>
 
   <!-- Sport Selection Tabs -->
-  <div class="flex justify-center gap-3 mb-8 flex-wrap">
+  <div class="flex justify-center gap-2 md:gap-3 mb-6 flex-wrap">
     @for (tab of tabs; track tab.label) {
       <button
-        class="flex items-center gap-2.5 px-7 py-3 rounded-2xl transition-all duration-200 cursor-pointer"
+        class="flex items-center gap-2 px-5 md:px-7 py-2.5 md:py-3 rounded-2xl transition-all duration-200 cursor-pointer"
         [class]="
           tab.label === activeTab
             ? 'neo-shadow-inset text-blue-600 font-bold'
@@ -21,66 +21,181 @@
         "
         (click)="activeTab = tab.label"
       >
-        <i [class]="tab.icon + ' text-lg'"></i>
-        <span class="text-base">{{ tab.label }}</span>
+        <i [class]="tab.icon + ' text-base md:text-lg'"></i>
+        <span class="text-sm md:text-base">{{ tab.label }}</span>
       </button>
     }
   </div>
 
   <!-- Search Panel -->
-  <div class="w-full max-w-5xl">
-    <div class="neo-bg neo-shadow rounded-3xl p-6 md:p-8">
-      <div class="grid grid-cols-1 md:grid-cols-4 gap-5 items-end">
+  <div class="w-full max-w-4xl">
+    <div class="neo-bg neo-shadow rounded-3xl p-4 md:p-6">
+      <!-- Top Row: 3 Fields -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-4 items-end">
 
         <!-- Location -->
         <div>
-          <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Location</label>
-          <div class="relative">
-            <i class="pi pi-map-marker absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
-            <p-select
-              [options]="locationOptions"
-              [(ngModel)]="location"
-              placeholder="Select location"
-              styleClass="w-full"
-              [style]="{ width: '100%' }"
-            ></p-select>
-          </div>
+          <label class="block text-[10px] md:text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">
+            <i class="pi pi-map-marker mr-1 text-blue-500"></i> Location
+          </label>
+          <p-select
+            [options]="locationOptions"
+            [(ngModel)]="location"
+            placeholder="Select location"
+            [filter]="true"
+            filterBy="label"
+            styleClass="w-full"
+            [style]="{ width: '100%' }"
+            (onChange)="onLocationChange()"
+          ></p-select>
         </div>
 
         <!-- Date -->
         <div>
-          <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Date</label>
-          <div class="relative">
-            <i class="pi pi-calendar absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 z-10"></i>
-            <p-datepicker
-              [(ngModel)]="date"
-              placeholder="Pick a date"
-              styleClass="w-full"
-              [inputStyleClass]="'neo-input w-full pl-12 pr-4 py-3 rounded-xl text-slate-700 font-medium placeholder-slate-400 border-none box-border'"
-            ></p-datepicker>
-          </div>
-        </div>
-
-        <!-- When -->
-        <div>
-          <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">When</label>
-          <p-select
-            [options]="dayOptions"
-            [(ngModel)]="selectedDay"
-            placeholder="Select day"
+          <label class="block text-[10px] md:text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">
+            <i class="pi pi-calendar mr-1 text-blue-500"></i> Date <span class="text-slate-400 font-normal normal-case">(optional)</span>
+          </label>
+          <p-datepicker
+            [(ngModel)]="date"
+            [placeholder]="isDateEnabled ? 'Pick a date' : 'Select location first'"
+            [disabled]="!isDateEnabled"
             styleClass="w-full"
-            [style]="{ width: '100%' }"
-          ></p-select>
+            [inputStyleClass]="'neo-input w-full pl-4 pr-4 py-2.5 md:py-3 rounded-xl text-sm md:text-base text-slate-700 font-medium placeholder-slate-400 border-none box-border'"
+          ></p-datepicker>
         </div>
 
+        <!-- Selected Date Display -->
+        <div>
+          @if (formattedDate) {
+            <div class="neo-shadow-inset rounded-xl px-3 py-2.5 md:py-3 flex items-center gap-2 whitespace-nowrap h-[2.75rem] md:h-[3rem]">
+              <i class="pi pi-check-circle text-green-600 text-sm shrink-0"></i>
+              <span class="text-xs font-bold text-slate-700 truncate">{{ formattedDate }}</span>
+            </div>
+          } @else {
+            <div class="neo-shadow-inset rounded-xl px-3 py-2.5 md:py-3 flex items-center gap-2 opacity-50 h-[2.75rem] md:h-[3rem]">
+              <i class="pi pi-calendar text-slate-400 text-sm shrink-0"></i>
+              <span class="text-xs font-medium text-slate-400">No date selected</span>
+            </div>
+          }
+        </div>
+      </div>
+
+      <!-- Bottom Row: Buttons -->
+      <div class="mt-4 flex flex-wrap items-center justify-center gap-3">
         <!-- Search Button -->
         <button
-          class="neo-button bg-blue-600 text-white px-8 py-3.5 rounded-xl font-bold text-base hover:bg-blue-700 transition-colors w-full shadow-none cursor-pointer"
+          [disabled]="!canSearch"
+          class="px-8 py-2.5 md:py-3 rounded-xl font-bold text-sm md:text-base transition-all duration-200 cursor-pointer flex items-center justify-center gap-2"
+          [class]="canSearch
+            ? 'bg-blue-600 text-white hover:bg-blue-700 shadow-md hover:shadow-lg'
+            : 'bg-slate-300 text-slate-500 cursor-not-allowed'"
           (click)="onSearch()"
         >
-          <i class="pi pi-search mr-2"></i> Search
+          <i class="pi pi-search text-sm"></i>
+          Search
         </button>
+
+        <!-- Filter Toggle -->
+        <button
+          class="px-5 py-2.5 md:py-3 rounded-xl font-bold text-sm transition-all duration-200 cursor-pointer flex items-center gap-2 neo-button"
+          [class]="showFilters ? 'text-blue-600' : 'text-slate-600 hover:text-blue-600'"
+          (click)="toggleFilters()"
+        >
+          <i class="pi pi-sliders-h text-sm"></i>
+          Filters
+          @if (hasActiveFilters) {
+            <span class="w-2 h-2 rounded-full bg-blue-600"></span>
+          }
+        </button>
+
+        <!-- Clear All -->
+        @if (hasSearched || hasActiveFilters) {
+          <button
+            class="px-5 py-2.5 md:py-3 rounded-xl font-bold text-sm transition-all duration-200 cursor-pointer flex items-center gap-2 neo-button text-red-500 hover:text-red-600"
+            (click)="clearAll()"
+          >
+            <i class="pi pi-times text-sm"></i>
+            Clear
+          </button>
+        }
       </div>
+
+      <!-- Filter Section -->
+      @if (showFilters) {
+        <div class="mt-4 pt-4 border-t border-slate-300/50">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+
+            <!-- Price Range -->
+            <div>
+              <label class="block text-[10px] md:text-xs font-bold text-slate-500 uppercase tracking-wider mb-3">
+                <i class="pi pi-dollar mr-1 text-blue-500"></i>
+                Price Range
+                <span class="text-slate-400 font-normal normal-case ml-1">
+                  Rs. {{ priceRange[0].toLocaleString() }} - Rs. {{ priceRange[1].toLocaleString() }}
+                </span>
+              </label>
+              <p-slider
+                [(ngModel)]="priceRange"
+                [range]="true"
+                [min]="0"
+                [max]="maxPrice"
+                [step]="100"
+                styleClass="w-full"
+              ></p-slider>
+            </div>
+
+            <!-- Minimum Rating -->
+            <div>
+              <label class="block text-[10px] md:text-xs font-bold text-slate-500 uppercase tracking-wider mb-3">
+                <i class="pi pi-star mr-1 text-blue-500"></i>
+                Minimum Rating
+              </label>
+              <div class="flex flex-wrap gap-2">
+                @for (opt of ratingOptions; track opt.value) {
+                  <button
+                    type="button"
+                    class="px-4 py-2 rounded-lg text-xs font-bold transition-all duration-200 cursor-pointer flex items-center gap-1.5"
+                    [class]="
+                      minRating === opt.value
+                        ? 'bg-blue-600 text-white shadow-md'
+                        : 'neo-button text-slate-600 hover:text-blue-600'
+                    "
+                    (click)="minRating = opt.value"
+                  >
+                    @if (opt.value > 0) {
+                      <i class="pi pi-star-fill text-yellow-400 text-[10px]"></i>
+                    }
+                    {{ opt.label }}
+                  </button>
+                }
+              </div>
+            </div>
+          </div>
+
+          <!-- Active Filters Summary -->
+          @if (hasActiveFilters) {
+            <div class="mt-3 flex items-center gap-2 flex-wrap">
+              <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Active:</span>
+              @if (priceRange[0] > 0 || priceRange[1] < maxPrice) {
+                <span class="neo-shadow-inset px-2.5 py-1 rounded-lg text-[11px] font-bold text-slate-600 flex items-center gap-1">
+                  Rs. {{ priceRange[0] }} - {{ priceRange[1] }}
+                </span>
+              }
+              @if (minRating > 0) {
+                <span class="neo-shadow-inset px-2.5 py-1 rounded-lg text-[11px] font-bold text-slate-600 flex items-center gap-1">
+                  <i class="pi pi-star-fill text-yellow-500 text-[9px]"></i> {{ minRating }}+
+                </span>
+              }
+              <button
+                class="text-[11px] font-bold text-red-500 hover:text-red-600 cursor-pointer transition-colors"
+                (click)="clearFilters()"
+              >
+                Clear filters
+              </button>
+            </div>
+          }
+        </div>
+      }
     </div>
   </div>
 </section>
@@ -89,36 +204,36 @@
 <section class="px-4 md:px-8 py-8 max-w-7xl mx-auto">
   <!-- Search Results -->
   @if (hasSearched) {
-    <div class="flex items-center justify-between mb-5">
-      <p class="text-sm font-bold text-slate-500">
-        {{ searchResults.length }} {{ activeTab }} venue{{ searchResults.length !== 1 ? 's' : '' }} found
-      </p>
-      <button
-        class="neo-button px-4 py-2 rounded-lg text-sm font-bold text-blue-700 hover:text-blue-800 transition-colors"
-        (click)="clearSearch()"
-      >
-        <i class="pi pi-arrow-left mr-1"></i> Back to Trending
-      </button>
+    <!-- Results Header -->
+    <div class="mb-5">
+      <div class="flex items-center gap-2 flex-wrap">
+        <p class="text-sm font-bold text-slate-500">
+          {{ filteredResults.length }} {{ activeTab }} venue{{ filteredResults.length !== 1 ? 's' : '' }} in <span class="text-blue-600">{{ location }}</span>
+        </p>
+        @if (date) {
+          <span class="text-xs font-medium text-slate-400">|</span>
+          <span class="text-xs font-bold text-slate-500">
+            <i class="pi pi-calendar mr-1 text-blue-500"></i> {{ formattedDate }}
+          </span>
+        }
+      </div>
     </div>
 
-    @if (searchResults.length === 0) {
+    @if (filteredResults.length === 0) {
       <div class="neo-bg neo-shadow rounded-2xl p-12 text-center">
         <div class="neo-shadow-inset w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4">
           <i class="pi pi-search text-3xl text-slate-300"></i>
         </div>
         <p class="text-slate-400 font-bold text-lg">No venues found</p>
-        <p class="text-slate-400 font-medium text-sm mt-1">Try a different location or sport</p>
+        <p class="text-slate-400 font-medium text-sm mt-1">Try adjusting your filters or search criteria</p>
       </div>
     } @else {
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        @for (venue of searchResults; track venue.id) {
-          <div class="neo-bg neo-shadow rounded-2xl overflow-hidden flex flex-col">
-            <!-- Venue Image -->
+        @for (venue of filteredResults; track venue.id) {
+          <div class="neo-bg neo-shadow rounded-2xl overflow-hidden flex flex-col cursor-pointer hover:shadow-lg transition-shadow duration-200" (click)="viewVenue(venue)">
             <div class="h-44 overflow-hidden">
               <img [src]="venue.image" [alt]="venue.name" class="w-full h-full object-cover" />
             </div>
-
-            <!-- Venue Info -->
             <div class="p-5 flex flex-col flex-1">
               <div class="flex items-start justify-between mb-2">
                 <div>
@@ -136,41 +251,11 @@
                   <span class="text-[10px] text-slate-400 font-medium">{{ venue.totalRatings }} ratings</span>
                 </div>
               </div>
-
               <p class="text-slate-500 text-sm font-medium leading-relaxed mb-3">{{ venue.description }}</p>
-
-              <div class="flex items-center gap-3 flex-wrap mb-4">
+              <div class="flex items-center gap-3 flex-wrap mt-auto">
                 <span class="text-sm font-bold text-slate-700">
                   Rs. {{ venue.pricePerHour.toLocaleString() }} <span class="text-xs font-medium text-slate-400">/ hr</span>
                 </span>
-                <span class="text-xs font-bold text-green-600">
-                  {{ getAvailableCount(venue) }} slots available
-                </span>
-              </div>
-
-              <!-- Time Slots -->
-              <div class="neo-shadow-inset rounded-xl p-3 mt-auto">
-                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2">Time Slots</p>
-                <div class="flex flex-wrap gap-1.5">
-                  @for (slot of venue.availableSlots; track slot.startTime) {
-                    <button
-                      class="px-2.5 py-1 rounded-lg text-[11px] font-bold transition-all duration-200"
-                      [class]="
-                        !slot.available
-                          ? 'bg-slate-200/60 text-slate-400 cursor-not-allowed line-through'
-                          : isSlotSelected(venue.id, slotKey(slot))
-                            ? 'bg-blue-600 text-white shadow-md'
-                            : 'neo-button text-slate-600 hover:text-blue-600 cursor-pointer'
-                      "
-                      [disabled]="!slot.available"
-                      (click)="selectSlot(venue.id, slotKey(slot))"
-                      [pTooltip]="slot.available ? formatSlotRange(slot) : 'Unavailable'"
-                      tooltipPosition="top"
-                    >
-                      {{ formatSlotRange(slot) }}
-                    </button>
-                  }
-                </div>
               </div>
             </div>
           </div>
@@ -182,13 +267,10 @@
     <h2 class="text-2xl font-bold text-slate-800 mb-6">Trending Venues</h2>
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       @for (venue of trendingVenues; track venue.id) {
-        <div class="neo-bg neo-shadow rounded-2xl overflow-hidden flex flex-col">
-          <!-- Venue Image -->
+        <div class="neo-bg neo-shadow rounded-2xl overflow-hidden flex flex-col cursor-pointer hover:shadow-lg transition-shadow duration-200" (click)="viewVenue(venue)">
           <div class="h-44 overflow-hidden">
             <img [src]="venue.image" [alt]="venue.name" class="w-full h-full object-cover" />
           </div>
-
-          <!-- Venue Info -->
           <div class="p-5 flex flex-col flex-1">
             <div class="flex items-start justify-between mb-2">
               <div>
@@ -206,38 +288,11 @@
                 <span class="text-[10px] text-slate-400 font-medium">{{ venue.totalRatings }} ratings</span>
               </div>
             </div>
-
             <p class="text-slate-500 text-sm font-medium leading-relaxed mb-3">{{ venue.description }}</p>
-
-            <div class="flex items-center gap-3 flex-wrap mb-4">
+            <div class="flex items-center gap-3 flex-wrap mt-auto">
               <span class="text-sm font-bold text-slate-700">
                 Rs. {{ venue.pricePerHour.toLocaleString() }} <span class="text-xs font-medium text-slate-400">/ hr</span>
               </span>
-              <span class="text-xs font-bold text-green-600">
-                {{ getAvailableCount(venue) }} slots available
-              </span>
-            </div>
-
-            <!-- Time Slots -->
-            <div class="neo-shadow-inset rounded-xl p-3 mt-auto">
-              <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2">Time Slots</p>
-              <div class="flex flex-wrap gap-1.5">
-                @for (slot of venue.availableSlots; track slot.startTime) {
-                  <button
-                    class="px-2.5 py-1 rounded-lg text-[11px] font-bold transition-all duration-200"
-                    [class]="
-                      !slot.available
-                        ? 'bg-slate-200/60 text-slate-400 cursor-not-allowed line-through'
-                        : 'neo-button text-slate-600 hover:text-blue-600 cursor-pointer'
-                    "
-                    [disabled]="!slot.available"
-                    [pTooltip]="slot.available ? formatSlotRange(slot) : 'Unavailable'"
-                    tooltipPosition="top"
-                  >
-                    {{ formatSlotRange(slot) }}
-                  </button>
-                }
-              </div>
             </div>
           </div>
         </div>

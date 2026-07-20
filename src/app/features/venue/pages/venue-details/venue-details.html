@@ -1,0 +1,580 @@
+<p-toast></p-toast>
+
+@if (venue) {
+  <div class="min-h-screen pt-20 pb-8 px-4 md:px-8">
+    <div class="max-w-5xl mx-auto">
+      <!-- Back Button -->
+      <button
+        class="neo-button px-4 py-2 rounded-xl text-sm font-bold text-slate-600 hover:text-blue-600 transition-colors mb-5 flex items-center gap-2 cursor-pointer"
+        (click)="goBack()"
+      >
+        <i class="pi pi-arrow-left text-xs"></i>
+        {{ currentStep === 1 ? 'Back to search' : 'Back' }}
+      </button>
+
+      <!-- Hero Image -->
+      <div class="neo-bg neo-shadow rounded-3xl overflow-hidden mb-5">
+        <div class="h-52 md:h-72 overflow-hidden">
+          <img [src]="venue.image" [alt]="venue.name" class="w-full h-full object-cover" />
+        </div>
+      </div>
+
+      <!-- Venue Info Card -->
+      <div class="neo-bg neo-shadow rounded-2xl p-5 md:p-6 mb-5">
+        <!-- Top Row: Name + Rating -->
+        <div class="flex items-start justify-between gap-4">
+          <div class="min-w-0 flex-1">
+            <h1 class="text-xl sm:text-2xl md:text-3xl font-extrabold text-slate-800 leading-tight">{{ venue.name }}</h1>
+            <div class="flex items-center gap-1.5 mt-1.5">
+              <i class="pi pi-map-marker text-blue-500 text-xs"></i>
+              <span class="text-sm text-slate-500 font-medium">{{ venue.location }}</span>
+            </div>
+          </div>
+          <!-- Rating Badge (Right) -->
+          <div class="neo-shadow-inset px-3 py-2 rounded-xl flex flex-col items-center gap-0.5 shrink-0">
+            <div class="flex items-center gap-1">
+              <i class="pi pi-star-fill text-yellow-500 text-sm"></i>
+              <span class="text-lg font-bold text-slate-700">{{ venue.rating }}</span>
+            </div>
+            <span class="text-[11px] text-slate-400 font-medium">{{ venue.totalRatings }} ratings</span>
+          </div>
+        </div>
+
+        <!-- Tags Row -->
+        <div class="flex flex-wrap items-center gap-2 mt-3">
+          <span class="neo-shadow-inset px-2.5 py-1 rounded-lg text-xs font-bold text-blue-600 uppercase tracking-wide">
+            {{ venue.sport }}
+          </span>
+          <span class="flex items-center gap-1 text-sm font-bold text-slate-700">
+            <i class="pi pi-tag text-blue-500 text-xs"></i>
+            Rs. {{ venue.pricePerHour.toLocaleString() }} <span class="text-slate-400 font-medium">/ hr</span>
+          </span>
+        </div>
+
+        <!-- Description -->
+        <div class="pt-3 mt-3 border-t border-slate-200/60">
+          <p class="text-slate-600 text-sm md:text-base font-medium leading-relaxed">
+            {{ venue.description }}
+          </p>
+        </div>
+
+        <!-- Amenities -->
+        <div class="pt-3 mt-3 border-t border-slate-200/60">
+          <h2 class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-3">
+            <i class="pi pi-building mr-1 text-blue-500"></i> Amenities & Facilities
+          </h2>
+          <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2">
+            @for (amenity of amenities; track amenity) {
+              <div class="flex items-center gap-2 text-sm text-slate-600">
+                <i class="pi pi-check text-green-500 text-xs"></i>
+                <span class="font-medium">{{ amenity }}</span>
+              </div>
+            }
+          </div>
+        </div>
+      </div>
+
+      <!-- ========== STEP BAR ========== -->
+      <div class="neo-bg neo-shadow rounded-2xl p-5 md:p-6 mb-5">
+        <div class="flex items-center justify-between">
+          @for (step of [1, 2, 3]; track step) {
+            <div class="flex items-center gap-3 flex-1">
+              <div
+                class="w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold shrink-0 transition-all duration-300"
+                [class]="
+                  currentStep >= step
+                    ? 'bg-blue-600 text-white shadow-md'
+                    : 'neo-shadow-inset text-slate-400'
+                "
+              >
+                @if (currentStep > step) {
+                  <i class="pi pi-check text-xs"></i>
+                } @else {
+                  {{ step }}
+                }
+              </div>
+              <div class="hidden sm:block">
+                <p
+                  class="text-xs font-bold transition-colors"
+                  [class]="currentStep >= step ? 'text-blue-600' : 'text-slate-400'"
+                >
+                  @switch (step) {
+                    @case (1) { Booking Type }
+                    @case (2) { Schedule }
+                    @case (3) { Confirm }
+                  }
+                </p>
+              </div>
+              @if (step < 3) {
+                <div class="flex-1 h-0.5 mx-3 rounded-full hidden sm:block"
+                  [class]="currentStep > step ? 'bg-blue-600' : 'bg-slate-200'"
+                ></div>
+              }
+            </div>
+          }
+        </div>
+        <h2 class="text-base font-extrabold text-slate-700 mt-5">{{ stepTitle }}</h2>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <!-- ===== LEFT: Step Content ===== -->
+        <div class="lg:col-span-2">
+
+          <!-- ========== STEP 1: Booking Type ========== -->
+          @if (currentStep === 1) {
+            <div class="space-y-4">
+              <button
+                class="w-full text-left p-5 rounded-2xl transition-all duration-300 cursor-pointer"
+                [class]="
+                  bookingType === 'specific'
+                    ? 'bg-blue-600 text-white shadow-lg shadow-blue-200'
+                    : 'neo-bg neo-shadow hover:shadow-lg'
+                "
+                (click)="selectBookingType('specific')"
+              >
+                <div class="flex items-center gap-4">
+                  <div
+                    class="w-12 h-12 rounded-xl flex items-center justify-center shrink-0"
+                    [class]="bookingType === 'specific' ? 'bg-white/20' : 'neo-shadow-inset'"
+                  >
+                    <i class="pi pi-calendar text-xl"
+                      [class]="bookingType === 'specific' ? 'text-white' : 'text-blue-500'"
+                    ></i>
+                  </div>
+                  <div>
+                    <p class="font-bold text-lg"
+                      [class]="bookingType === 'specific' ? 'text-white' : 'text-slate-700'"
+                    >Specific Date</p>
+                    <p class="text-sm mt-0.5"
+                      [class]="bookingType === 'specific' ? 'text-blue-100' : 'text-slate-500'"
+                    >Book for a single date and time slot</p>
+                  </div>
+                </div>
+              </button>
+
+              <button
+                class="w-full text-left p-5 rounded-2xl transition-all duration-300 cursor-pointer"
+                [class]="
+                  bookingType === 'recurring'
+                    ? 'bg-blue-600 text-white shadow-lg shadow-blue-200'
+                    : 'neo-bg neo-shadow hover:shadow-lg'
+                "
+                (click)="selectBookingType('recurring')"
+              >
+                <div class="flex items-center gap-4">
+                  <div
+                    class="w-12 h-12 rounded-xl flex items-center justify-center shrink-0"
+                    [class]="bookingType === 'recurring' ? 'bg-white/20' : 'neo-shadow-inset'"
+                  >
+                    <i class="pi pi-sync text-xl"
+                      [class]="bookingType === 'recurring' ? 'text-white' : 'text-blue-500'"
+                    ></i>
+                  </div>
+                  <div>
+                    <p class="font-bold text-lg"
+                      [class]="bookingType === 'recurring' ? 'text-white' : 'text-slate-700'"
+                    >Recurring Booking</p>
+                    <p class="text-sm mt-0.5"
+                      [class]="bookingType === 'recurring' ? 'text-blue-100' : 'text-slate-500'"
+                    >Set up a repeating weekly or monthly schedule</p>
+                  </div>
+                </div>
+              </button>
+            </div>
+          }
+
+          <!-- ========== STEP 2: Specific Date ========== -->
+          @if (currentStep === 2 && bookingType === 'specific') {
+            <div class="space-y-5">
+              <div class="neo-bg neo-shadow rounded-2xl p-5 md:p-6">
+                <h3 class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-3">
+                  <i class="pi pi-calendar mr-1 text-blue-500"></i> Select Date
+                </h3>
+                <div class="flex items-center gap-4 flex-wrap">
+                  <p-datepicker
+                    [(ngModel)]="selectedDate"
+                    placeholder="Pick a date"
+                    [minDate]="minDate"
+                    styleClass="w-full sm:w-auto"
+                    [inputStyleClass]="'neo-input w-full sm:w-64 pl-4 pr-4 py-2.5 rounded-xl text-sm text-slate-700 font-medium placeholder-slate-400 border-none box-border'"
+                    (onSelect)="onSpecificDateSelect()"
+                  ></p-datepicker>
+                  <span class="text-sm font-bold text-slate-700">{{ formattedDate }}</span>
+                </div>
+              </div>
+
+              @if (selectedDate && displayedSlots.length > 0) {
+                <div class="neo-bg neo-shadow rounded-2xl p-5 md:p-6">
+                  <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-xs font-bold text-slate-500 uppercase tracking-wider">
+                      <i class="pi pi-clock mr-1 text-blue-500"></i> Available Time Slots
+                    </h3>
+                    <div class="flex items-center gap-3">
+                      @if (selectedSlots.length > 0) {
+                        <span class="text-xs font-bold text-blue-600">{{ selectedSlots.length }} selected</span>
+                      }
+                      <span class="text-xs font-bold text-green-600">{{ availableCount }} available</span>
+                    </div>
+                  </div>
+                  <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 gap-2">
+                    @for (slot of displayedSlots; track slot.startTime) {
+                      <button
+                        class="relative px-3 py-2.5 rounded-xl text-xs font-bold transition-all duration-200 text-center"
+                        [class]="
+                          !slot.available
+                            ? 'bg-slate-200/60 text-slate-400 cursor-not-allowed line-through'
+                            : isSlotSelected(slot)
+                              ? 'bg-blue-600 text-white shadow-md'
+                              : 'neo-button text-slate-600 hover:text-blue-600 cursor-pointer'
+                        "
+                        [disabled]="!slot.available"
+                        (click)="selectSlot(slot)"
+                        [pTooltip]="formatSlotRange(slot)"
+                        tooltipPosition="top"
+                      >
+                        @if (isSlotSelected(slot)) {
+                          <i class="pi pi-check absolute top-1 right-1 text-[9px]"></i>
+                        }
+                        {{ formatSlotRange(slot) }}
+                      </button>
+                    }
+                  </div>
+                </div>
+              }
+            </div>
+          }
+
+          <!-- ========== STEP 2: Recurring ========== -->
+          @if (currentStep === 2 && bookingType === 'recurring') {
+            <div class="space-y-5">
+
+              <!-- Repeat Option -->
+              <div class="neo-bg neo-shadow rounded-2xl p-5 md:p-6">
+                <h3 class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-4">
+                  <i class="pi pi-sync mr-1 text-blue-500"></i> Repeat
+                </h3>
+                <div class="flex gap-3">
+                  <button
+                    class="flex-1 py-3 px-4 rounded-xl text-sm font-bold transition-all duration-200 cursor-pointer"
+                    [class]="
+                      repeatOption === 'weekly'
+                        ? 'bg-blue-600 text-white shadow-md'
+                        : 'neo-button text-slate-600 hover:text-blue-600'
+                    "
+                    (click)="repeatOption = 'weekly'; onRepeatOptionChange()"
+                  >
+                    <i class="pi pi-calendar mr-1.5"></i> Weekly
+                  </button>
+                  <button
+                    class="flex-1 py-3 px-4 rounded-xl text-sm font-bold transition-all duration-200 cursor-pointer"
+                    [class]="
+                      repeatOption === 'monthly'
+                        ? 'bg-blue-600 text-white shadow-md'
+                        : 'neo-button text-slate-600 hover:text-blue-600'
+                    "
+                    (click)="repeatOption = 'monthly'; onRepeatOptionChange()"
+                  >
+                    <i class="pi pi-calendar mr-1.5"></i> Monthly
+                  </button>
+                </div>
+                <p class="text-xs text-slate-400 mt-2">
+                  @if (repeatOption === 'weekly') {
+                    Dates must be in intervals of 7 days
+                  } @else {
+                    Dates must be in intervals of 1 month
+                  }
+                </p>
+              </div>
+
+              <!-- Date Range -->
+              <div class="neo-bg neo-shadow rounded-2xl p-5 md:p-6">
+                <h3 class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-3">
+                  <i class="pi pi-calendar mr-1 text-blue-500"></i> Date Range
+                </h3>
+                <p class="text-xs text-slate-400 mb-3">
+                  @if (repeatOption === 'weekly') {
+                    Repeats every 7 days from start date
+                  } @else {
+                    Repeats every month from start date
+                  }
+                </p>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label class="text-[11px] font-bold text-slate-400 uppercase mb-1.5 block">Start Date</label>
+                    <p-datepicker
+                      [(ngModel)]="recurStartDate"
+                      placeholder="Start date"
+                      [minDate]="minDate"
+                      styleClass="w-full"
+                      [inputStyleClass]="'neo-input w-full pl-4 pr-4 py-2.5 rounded-xl text-sm text-slate-700 font-medium placeholder-slate-400 border-none box-border'"
+                      (onSelect)="onStartDateChange()"
+                    ></p-datepicker>
+                  </div>
+                  <div>
+                    <label class="text-[11px] font-bold text-slate-400 uppercase mb-1.5 block">End Date</label>
+                    <p-datepicker
+                      [(ngModel)]="recurEndDate"
+                      placeholder="Select start date first"
+                      [minDate]="recurEndDateMin"
+                      [maxDate]="recurEndDateMax"
+                      [disabledDates]="disabledEndDate"
+                      [disabled]="!recurStartDate"
+                      styleClass="w-full"
+                      [inputStyleClass]="'neo-input w-full pl-4 pr-4 py-2.5 rounded-xl text-sm text-slate-700 font-medium placeholder-slate-400 border-none box-border'"
+                      (onSelect)="onEndDateChange()"
+                    ></p-datepicker>
+                  </div>
+                </div>
+                @if (recurEndDate) {
+                  <p class="text-xs text-blue-600 font-medium mt-2 flex items-center gap-1">
+                    <i class="pi pi-info-circle"></i>
+                    {{ recurOccurrences.length }} {{ repeatOption === 'weekly' ? 'weekly' : 'monthly' }} occurrences from {{ recurStartDate | date:'mediumDate' }} to {{ recurEndDate | date:'mediumDate' }}
+                  </p>
+                }
+              </div>
+
+              <!-- Recurring: Time Slots -->
+              @if (recurOccurrences.length > 0) {
+                @for (dayKey of groupedDayKeys; track dayKey) {
+                  <div class="neo-bg neo-shadow rounded-2xl p-5 md:p-6">
+                    <div class="flex items-center justify-between mb-4">
+                      <h3 class="text-xs font-bold text-slate-500 uppercase tracking-wider">
+                        <i class="pi pi-clock mr-1 text-blue-500"></i> {{ dayKey }}
+                        <span class="text-slate-400 font-normal normal-case ml-1">({{ getGroupOccurrences(dayKey).length }} dates)</span>
+                      </h3>
+                      <div class="flex items-center gap-3">
+                        @if ((daySelectedSlots[dayKey] || []).length > 0) {
+                          <span class="text-xs font-bold text-blue-600">{{ (daySelectedSlots[dayKey] || []).length }} selected</span>
+                        }
+                        <span class="text-xs font-bold text-green-600">{{ getDayAvailableCount(dayKey) }} available</span>
+                      </div>
+                    </div>
+                    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 gap-2">
+                      @for (slot of daySlots[dayKey]; track slot.startTime) {
+                        <button
+                          class="relative px-3 py-2.5 rounded-xl text-xs font-bold transition-all duration-200 text-center"
+                          [class]="
+                            !slot.available
+                              ? 'bg-slate-200/60 text-slate-400 cursor-not-allowed line-through'
+                              : isDaySlotSelected(dayKey, slot)
+                                ? 'bg-blue-600 text-white shadow-md'
+                                : 'neo-button text-slate-600 hover:text-blue-600 cursor-pointer'
+                          "
+                          [disabled]="!slot.available"
+                          (click)="selectDaySlot(dayKey, slot)"
+                          [pTooltip]="formatSlotRange(slot)"
+                          tooltipPosition="top"
+                        >
+                          @if (isDaySlotSelected(dayKey, slot)) {
+                            <i class="pi pi-check absolute top-1 right-1 text-[9px]"></i>
+                          }
+                          {{ formatSlotRange(slot) }}
+                        </button>
+                      }
+                    </div>
+                  </div>
+                }
+              }
+
+            </div>
+          }
+
+          <!-- ========== STEP 3: Confirmation ========== -->
+          @if (currentStep === 3) {
+            <div class="neo-bg neo-shadow rounded-2xl p-5 md:p-6">
+              @if (!bookingConfirmed) {
+                <h3 class="text-sm font-bold text-slate-700 mb-4">Booking Summary</h3>
+
+                <!-- Specific Date Summary -->
+                @if (bookingType === 'specific') {
+                  <div class="neo-shadow-inset rounded-xl p-3">
+                    <!-- Date + Slots count inline -->
+                    <div class="flex items-center justify-between mb-2">
+                      <div class="flex items-center gap-2">
+                        <i class="pi pi-calendar text-blue-500 text-sm"></i>
+                        <span class="text-sm font-bold text-slate-700">{{ formattedDate }}</span>
+                      </div>
+                      @if (selectedSlots.length > 0) {
+                        <span class="text-xs font-bold text-blue-600">{{ selectedSlots.length }} slot{{ selectedSlots.length > 1 ? 's' : '' }}</span>
+                      }
+                    </div>
+                    <!-- Time slots compact -->
+                    @if (selectedSlots.length > 0) {
+                      <div class="flex flex-wrap gap-1.5">
+                        @for (s of selectedSlots; track s) {
+                          <span class="inline-flex items-center gap-0.5 bg-blue-50 text-blue-700 text-[11px] font-bold px-2 py-0.5 rounded-md">
+                            <i class="pi pi-check text-[7px] text-blue-400"></i>
+                            {{ formatTime(s.split('-')[0]) }} - {{ formatTime(s.split('-')[1]) }}
+                          </span>
+                        }
+                      </div>
+                    }
+                  </div>
+                }
+
+                <!-- Recurring Summary -->
+                @if (bookingType === 'recurring') {
+                  <div class="space-y-2.5">
+                    <!-- Info row: Start | End | Repeat -->
+                    <div class="neo-shadow-inset rounded-xl p-3">
+                      <div class="grid grid-cols-3 gap-2 text-center">
+                        <div>
+                          <p class="text-[10px] text-slate-400 font-bold uppercase">Start</p>
+                          <p class="text-xs font-bold text-slate-700 mt-0.5">{{ formattedRecurStartDate }}</p>
+                        </div>
+                        <div class="border-x border-slate-200/60">
+                          <p class="text-[10px] text-slate-400 font-bold uppercase">End</p>
+                          <p class="text-xs font-bold text-slate-700 mt-0.5">{{ formattedRecurEndDate }}</p>
+                        </div>
+                        <div>
+                          <p class="text-[10px] text-slate-400 font-bold uppercase">Repeat</p>
+                          <p class="text-xs font-bold text-slate-700 mt-0.5">{{ repeatOption === 'weekly' ? 'Weekly' : 'Monthly' }}</p>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Schedule compact -->
+                    @if (recurOccurrences.length > 0) {
+                      <div class="neo-shadow-inset rounded-xl p-3">
+                        <div class="flex items-center justify-between mb-2">
+                          <p class="text-[10px] text-slate-400 font-bold uppercase">Schedule</p>
+                          <span class="text-[10px] font-bold text-blue-600">{{ recurOccurrences.length }} dates</span>
+                        </div>
+                        @for (dayKey of groupedDayKeys; track dayKey) {
+                          <div class="flex items-center justify-between py-1 border-b border-slate-200/40 last:border-0">
+                            <span class="text-xs font-semibold text-slate-600">{{ dayKey }}</span>
+                            @if ((daySelectedSlots[dayKey] || []).length > 0) {
+                              <div class="flex flex-wrap gap-1 justify-end">
+                                @for (s of daySelectedSlots[dayKey]; track s) {
+                                  <span class="text-[10px] font-bold text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded">
+                                    {{ formatTime(s.split('-')[0]) }} - {{ formatTime(s.split('-')[1]) }}
+                                  </span>
+                                }
+                              </div>
+                            } @else {
+                              <span class="text-[10px] text-slate-300">—</span>
+                            }
+                          </div>
+                        }
+                      </div>
+                    }
+                  </div>
+                }
+
+                <!-- Price -->
+                <div class="flex items-center justify-between mt-4 pt-3 border-t border-slate-200/60">
+                  <div>
+                    @if (bookingType === 'specific' && selectedSlots.length > 0) {
+                      <p class="text-[11px] text-slate-400 font-medium">{{ selectedSlots.length }} hour{{ selectedSlots.length > 1 ? 's' : '' }} &times; Rs. {{ venue.pricePerHour.toLocaleString() }}</p>
+                    } @else {
+                      <p class="text-[11px] text-slate-400 font-medium">per hour</p>
+                    }
+                  </div>
+                  <p class="text-2xl font-extrabold text-blue-600">
+                    @if (bookingType === 'specific' && selectedSlots.length > 0) {
+                      Rs. {{ (venue.pricePerHour * selectedSlots.length).toLocaleString() }}
+                    } @else {
+                      Rs. {{ venue.pricePerHour.toLocaleString() }}
+                    }
+                  </p>
+                </div>
+              } @else {
+                <div class="text-center py-4">
+                  <div class="neo-shadow-inset w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-3">
+                    <i class="pi pi-check-circle text-3xl text-green-500"></i>
+                  </div>
+                  <h3 class="text-lg font-extrabold text-slate-700 mb-1">Booking Confirmed!</h3>
+                  <p class="text-slate-500 text-sm font-medium">
+                    Your booking at <strong>{{ venue.name }}</strong> has been confirmed.
+                  </p>
+                  <p class="text-slate-400 text-xs mt-1">
+                    @if (bookingType === 'specific') {
+                      {{ formattedDate }}
+                    } @else {
+                      {{ recurringSummary }}
+                    }
+                  </p>
+                </div>
+              }
+            </div>
+          }
+        </div>
+
+        <!-- ===== RIGHT: Sidebar ===== -->
+        <div class="lg:col-span-1">
+          <div class="neo-bg neo-shadow rounded-2xl p-5 md:p-6 sticky top-24">
+            <div class="text-center mb-5">
+              @if (currentStep === 2 && bookingType === 'specific' && selectedSlots.length > 0) {
+                <p class="text-sm text-slate-400 font-medium mb-1">{{ selectedSlots.length }} hour{{ selectedSlots.length > 1 ? 's' : '' }}</p>
+                <p class="text-3xl font-extrabold text-blue-600">
+                  Rs. {{ (venue.pricePerHour * selectedSlots.length).toLocaleString() }}
+                </p>
+                <p class="text-sm text-slate-400 font-medium">Rs. {{ venue.pricePerHour.toLocaleString() }} / hr</p>
+              } @else {
+                <p class="text-3xl font-extrabold text-blue-600">
+                  Rs. {{ venue.pricePerHour.toLocaleString() }}
+                </p>
+                <p class="text-sm text-slate-400 font-medium">per hour</p>
+              }
+            </div>
+
+            <div class="flex gap-3">
+              @if (currentStep > 1) {
+                <button
+                  class="flex-1 py-3 rounded-xl font-bold text-sm transition-all duration-200 cursor-pointer neo-button text-slate-600 hover:text-blue-600"
+                  (click)="prevStep()"
+                >
+                  <i class="pi pi-arrow-left mr-1"></i> Back
+                </button>
+              }
+              @if (currentStep < 3) {
+                <button
+                  class="flex-1 py-3 rounded-xl font-bold text-sm transition-all duration-200 cursor-pointer"
+                  [class]="
+                    (currentStep === 1 && canProceedStep1()) || (currentStep === 2 && canProceedStep2())
+                      ? 'bg-blue-600 text-white hover:bg-blue-700 shadow-md hover:shadow-lg'
+                      : 'bg-slate-300 text-slate-500 cursor-not-allowed'
+                  "
+                  [disabled]="
+                    (currentStep === 1 && !canProceedStep1()) || (currentStep === 2 && !canProceedStep2())
+                  "
+                  (click)="nextStep()"
+                >
+                  Next <i class="pi pi-arrow-right ml-1"></i>
+                </button>
+              } @else {
+                @if (!bookingConfirmed) {
+                  <button
+                    class="flex-1 py-3 rounded-xl font-bold text-sm bg-blue-600 text-white hover:bg-blue-700 shadow-md hover:shadow-lg transition-all duration-200 cursor-pointer"
+                    (click)="bookSlot()"
+                  >
+                    <i class="pi pi-calendar-plus mr-1"></i>
+                    {{ isLoggedIn ? 'Confirm Booking' : 'Login to Book' }}
+                  </button>
+                }
+              }
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+} @else {
+  <div class="min-h-screen pt-20 pb-8 px-4 flex items-center justify-center">
+    <div class="neo-bg neo-shadow rounded-3xl p-12 text-center max-w-md">
+      <div class="neo-shadow-inset w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4">
+        <i class="pi pi-exclamation-circle text-3xl text-slate-300"></i>
+      </div>
+      <h2 class="text-xl font-bold text-slate-700 mb-2">Venue not found</h2>
+      <p class="text-slate-500 text-sm font-medium mb-6">
+        The venue you're looking for doesn't exist or has been removed.
+      </p>
+      <button
+        class="bg-blue-600 text-white px-6 py-2.5 rounded-xl font-bold text-sm hover:bg-blue-700 transition-colors shadow-md cursor-pointer"
+        (click)="goBack()"
+      >
+        <i class="pi pi-arrow-left mr-2"></i> Go Back
+      </button>
+    </div>
+  </div>
+}

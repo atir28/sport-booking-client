@@ -1,13 +1,15 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 import { InputTextModule } from 'primeng/inputtext';
 import { ButtonModule } from 'primeng/button';
 import { DatePickerModule } from 'primeng/datepicker';
 import { SelectModule } from 'primeng/select';
-import { TooltipModule } from 'primeng/tooltip';
+import { SliderModule } from 'primeng/slider';
 import { VenueSearchService } from '../search/services/venue-search.service';
-import { Venue, TimeSlot } from '../search/models/venue.model';
+import { Venue } from '../search/models/venue.model';
+import { SearchStore } from '../customer/store/search.store';
 
 @Component({
   selector: 'app-home',
@@ -18,21 +20,30 @@ import { Venue, TimeSlot } from '../search/models/venue.model';
     ButtonModule,
     DatePickerModule,
     SelectModule,
-    TooltipModule,
+    SliderModule,
   ],
   templateUrl: './home.html',
   styleUrl: './home.scss',
 })
 export class HomeComponent {
   private venueService = inject(VenueSearchService);
-
-  location = '';
-  date: Date | null = null;
-  selectedDay = '';
+  private router = inject(Router);
+  private searchStore = inject(SearchStore);
 
   searchResults: Venue[] = [];
   hasSearched = false;
-  selectedSlots: Record<string, string> = {};
+
+  // Filters
+  showFilters = false;
+
+  maxPrice = 5000;
+
+  ratingOptions = [
+    { label: 'Any', value: 0 },
+    { label: '4.0+', value: 4.0 },
+    { label: '4.5+', value: 4.5 },
+    { label: '4.7+', value: 4.7 },
+  ];
 
   trendingVenues = this.venueService.getVenues().slice(0, 6);
 
@@ -42,61 +53,104 @@ export class HomeComponent {
     { label: 'Cricket', icon: 'pi pi-bolt' },
   ];
 
-  activeTab = 'Futsal';
-
-  dayOptions = [
-    { label: 'Today', value: 'today' },
-    { label: 'Tomorrow', value: 'tomorrow' },
-    { label: 'This Weekend', value: 'weekend' },
-    { label: 'Pick a Date', value: 'custom' },
-  ];
-
   locationOptions = [
     { label: 'Kathmandu', value: 'Kathmandu' },
     { label: 'Lalitpur', value: 'Lalitpur' },
     { label: 'Bhaktapur', value: 'Bhaktapur' },
     { label: 'Pokhara', value: 'Pokhara' },
+    { label: 'Chitwan', value: 'Chitwan' },
+    { label: 'Butwal', value: 'Butwal' },
+    { label: 'Biratnagar', value: 'Biratnagar' },
+    { label: 'Dharan', value: 'Dharan' },
   ];
 
+  // Proxied getters/setters for store
+  get location(): string {
+    return this.searchStore.location();
+  }
+  set location(value: string) {
+    this.searchStore.setLocation(value);
+  }
+
+  get date(): Date | null {
+    return this.searchStore.date();
+  }
+  set date(value: Date | null) {
+    this.searchStore.setDate(value);
+  }
+
+  get priceRange(): number[] {
+    return this.searchStore.priceRange();
+  }
+  set priceRange(value: number[]) {
+    this.searchStore.setPriceRange(value);
+  }
+
+  get minRating(): number {
+    return this.searchStore.minRating();
+  }
+  set minRating(value: number) {
+    this.searchStore.setMinRating(value);
+  }
+
+  get activeTab(): string {
+    return this.searchStore.sport();
+  }
+  set activeTab(value: string) {
+    this.searchStore.setSport(value);
+  }
+
+  get isDateEnabled(): boolean {
+    return this.searchStore.hasLocation();
+  }
+
+  get formattedDate(): string {
+    return this.searchStore.formattedDate();
+  }
+
+  get canSearch(): boolean {
+    return this.searchStore.hasLocation();
+  }
+
+  get filteredResults(): Venue[] {
+    return this.searchResults.filter(v => {
+      const inPrice = v.pricePerHour >= this.priceRange[0] && v.pricePerHour <= this.priceRange[1];
+      const inRating = v.rating >= this.minRating;
+      return inPrice && inRating;
+    });
+  }
+
+  get hasActiveFilters(): boolean {
+    return this.priceRange[0] > 0 || this.priceRange[1] < this.maxPrice || this.minRating > 0;
+  }
+
   onSearch() {
+    if (!this.canSearch) return;
     this.searchResults = this.venueService.searchVenues(this.location, this.activeTab);
     this.hasSearched = true;
   }
 
-  clearSearch() {
-    this.location = '';
-    this.date = null;
-    this.selectedDay = '';
+  clearAll() {
+    this.searchStore.reset();
     this.searchResults = [];
     this.hasSearched = false;
-    this.selectedSlots = {};
+    this.showFilters = false;
   }
 
-  getAvailableCount(venue: Venue): number {
-    return venue.availableSlots.filter(s => s.available).length;
+  clearFilters() {
+    this.searchStore.setPriceRange([0, this.maxPrice]);
+    this.searchStore.setMinRating(0);
   }
 
-  formatTime(time: string): string {
-    const [h, m] = time.split(':');
-    const hour = parseInt(h, 10);
-    const suffix = hour >= 12 ? 'PM' : 'AM';
-    const displayHour = hour > 12 ? hour - 12 : hour === 0 ? 12 : hour;
-    return `${displayHour}:${m} ${suffix}`;
+  onLocationChange() {
+    this.searchStore.clearDate();
   }
 
-  formatSlotRange(slot: TimeSlot): string {
-    return `${this.formatTime(slot.startTime)} - ${this.formatTime(slot.endTime)}`;
+  toggleFilters() {
+    this.showFilters = !this.showFilters;
   }
 
-  slotKey(slot: TimeSlot): string {
-    return `${slot.startTime}-${slot.endTime}`;
-  }
-
-  selectSlot(venueId: string, key: string) {
-    this.selectedSlots[venueId] = this.selectedSlots[venueId] === key ? '' : key;
-  }
-
-  isSlotSelected(venueId: string, key: string): boolean {
-    return this.selectedSlots[venueId] === key;
+  viewVenue(venue: Venue) {
+    this.router.navigate(['/venue', venue.id]);
   }
 }
