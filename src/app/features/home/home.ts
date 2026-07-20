@@ -10,6 +10,7 @@ import { SliderModule } from 'primeng/slider';
 import { VenueSearchService } from '../search/services/venue-search.service';
 import { Venue } from '../search/models/venue.model';
 import { SearchStore } from '../customer/store/search.store';
+import { AuthService } from '../../core/services/auth.service';
 
 @Component({
   selector: 'app-home',
@@ -29,6 +30,15 @@ export class HomeComponent {
   private venueService = inject(VenueSearchService);
   private router = inject(Router);
   private searchStore = inject(SearchStore);
+  private authService = inject(AuthService);
+
+  get isLoggedIn(): boolean {
+    return this.authService.isLoggedIn;
+  }
+
+  get userName(): string {
+    return this.authService.currentUser()?.name || '';
+  }
 
   searchResults: Venue[] = [];
   hasSearched = false;

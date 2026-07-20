@@ -1,12 +1,21 @@
 <!-- Hero Section -->
 <section class="relative pt-10 pb-14 px-4 md:px-8 flex flex-col items-center mt-18">
   <div class="text-center z-10 max-w-3xl mb-6">
-    <h1 class="text-3xl md:text-5xl font-extrabold text-slate-800 mb-3 tracking-tight drop-shadow-sm">
-      Find your next sports venue
-    </h1>
-    <p class="text-base md:text-xl text-slate-600 font-medium">
-      Search low prices on courts, fields, and much more...
-    </p>
+    @if (isLoggedIn) {
+      <h1 class="text-3xl md:text-5xl font-extrabold text-slate-800 mb-3 tracking-tight drop-shadow-sm">
+        Welcome back, <span class="text-blue-600">{{ userName }}</span>
+      </h1>
+      <p class="text-base md:text-xl text-slate-600 font-medium">
+        Ready to book your next game?
+      </p>
+    } @else {
+      <h1 class="text-3xl md:text-5xl font-extrabold text-slate-800 mb-3 tracking-tight drop-shadow-sm">
+        Find your next sports venue
+      </h1>
+      <p class="text-base md:text-xl text-slate-600 font-medium">
+        Search low prices on courts, fields, and much more...
+      </p>
+    }
   </div>
 
   <!-- Sport Selection Tabs -->

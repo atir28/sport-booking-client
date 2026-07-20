@@ -6,6 +6,7 @@ export interface User {
   id: string;
   name: string;
   email: string;
+  phone: string;
   role: UserRole;
   avatar?: string;
 }
@@ -33,6 +34,7 @@ export class AuthService {
       id: 'U001',
       name: email.split('@')[0],
       email,
+      phone: '',
       role,
     });
   }
@@ -42,8 +44,20 @@ export class AuthService {
       id: 'U001',
       name,
       email,
+      phone,
       role,
     });
+  }
+
+  updateProfile(updates: Partial<Pick<User, 'name' | 'email' | 'phone' | 'avatar'>>): void {
+    const current = this.currentUser();
+    if (current) {
+      this.currentUser.set({ ...current, ...updates });
+    }
+  }
+
+  changePassword(_currentPassword: string, _newPassword: string): boolean {
+    return true;
   }
 
   logout(): void {

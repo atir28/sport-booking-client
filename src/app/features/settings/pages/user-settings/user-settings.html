@@ -1,0 +1,129 @@
+<p-toast></p-toast>
+
+<div class="min-h-screen pt-20 pb-8 px-4 md:px-8">
+  <div class="max-w-2xl mx-auto">
+
+    <!-- Header -->
+    <div class="mb-6">
+      <h1 class="text-2xl md:text-3xl font-extrabold text-slate-800">Settings</h1>
+      <p class="text-sm text-slate-500 font-medium mt-1">Customize your experience</p>
+    </div>
+
+    <!-- ========== APPEARANCE ========== -->
+    <div class="neo-bg neo-shadow rounded-2xl p-5 md:p-6 mb-5">
+      <div class="flex items-center gap-2 mb-4">
+        <div class="neo-shadow-inset w-8 h-8 rounded-lg flex items-center justify-center">
+          <i class="pi pi-palette text-blue-500 text-sm"></i>
+        </div>
+        <div>
+          <h2 class="text-sm font-bold text-slate-700">Appearance</h2>
+          <p class="text-[11px] text-slate-400 font-medium">Choose your theme mode</p>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-3 gap-3">
+        @for (opt of themeOptions; track opt.value) {
+          <button
+            class="relative p-4 rounded-xl text-center transition-all duration-200 cursor-pointer"
+            [class]="isActive('theme', opt.value)
+              ? 'bg-blue-600 text-white shadow-lg shadow-blue-200'
+              : 'neo-button text-slate-600 hover:text-blue-600'"
+            (click)="selectTheme(opt.value)">
+            <div class="flex flex-col items-center gap-2">
+              <div class="w-10 h-10 rounded-xl flex items-center justify-center"
+                [class]="isActive('theme', opt.value) ? 'bg-white/20' : 'neo-shadow-inset'">
+                <i class="pi text-lg"
+                  [class]="opt.icon + ' ' + (isActive('theme', opt.value) ? 'text-white' : 'text-blue-500')"></i>
+              </div>
+              <div>
+                <p class="text-xs font-bold">{{ opt.label }}</p>
+                <p class="text-[10px] font-medium mt-0.5"
+                  [class]="isActive('theme', opt.value) ? 'text-blue-100' : 'text-slate-400'">
+                  {{ opt.description }}
+                </p>
+              </div>
+            </div>
+            @if (isActive('theme', opt.value)) {
+              <div class="absolute top-2 right-2">
+                <i class="pi pi-check-circle text-white text-xs"></i>
+              </div>
+            }
+          </button>
+        }
+      </div>
+    </div>
+
+    <!-- ========== LANGUAGE ========== -->
+    <div class="neo-bg neo-shadow rounded-2xl p-5 md:p-6 mb-5">
+      <div class="flex items-center gap-2 mb-4">
+        <div class="neo-shadow-inset w-8 h-8 rounded-lg flex items-center justify-center">
+          <i class="pi pi-globe text-blue-500 text-sm"></i>
+        </div>
+        <div>
+          <h2 class="text-sm font-bold text-slate-700">Language</h2>
+          <p class="text-[11px] text-slate-400 font-medium">Select your preferred language</p>
+        </div>
+      </div>
+
+      <div class="flex gap-3">
+        @for (lang of languageOptions; track lang.value) {
+          <button
+            class="flex-1 p-4 rounded-xl transition-all duration-200 cursor-pointer"
+            [class]="isActive('lang', lang.value)
+              ? 'bg-blue-600 text-white shadow-lg shadow-blue-200'
+              : 'neo-button text-slate-600 hover:text-blue-600'"
+            (click)="selectLanguage(lang.value)">
+            <div class="flex items-center gap-3">
+              <span class="text-2xl">{{ lang.flag }}</span>
+              <div class="text-left">
+                <p class="text-sm font-bold">{{ lang.label }}</p>
+                <p class="text-[11px] font-medium"
+                  [class]="isActive('lang', lang.value) ? 'text-blue-100' : 'text-slate-400'">
+                  {{ lang.nativeLabel }}
+                </p>
+              </div>
+              @if (isActive('lang', lang.value)) {
+                <i class="pi pi-check-circle text-white text-sm ml-auto"></i>
+              }
+            </div>
+          </button>
+        }
+      </div>
+    </div>
+
+    <!-- ========== NOTIFICATIONS (placeholder) ========== -->
+    <div class="neo-bg neo-shadow rounded-2xl p-5 md:p-6">
+      <div class="flex items-center gap-2 mb-4">
+        <div class="neo-shadow-inset w-8 h-8 rounded-lg flex items-center justify-center">
+          <i class="pi pi-bell text-blue-500 text-sm"></i>
+        </div>
+        <div>
+          <h2 class="text-sm font-bold text-slate-700">Notifications</h2>
+          <p class="text-[11px] text-slate-400 font-medium">Manage your notification preferences</p>
+        </div>
+      </div>
+
+      <div class="space-y-3">
+        <div class="flex items-center justify-between py-2">
+          <div>
+            <p class="text-sm font-bold text-slate-700">Email Notifications</p>
+            <p class="text-[11px] text-slate-400 font-medium">Booking confirmations and updates</p>
+          </div>
+          <div class="w-10 h-6 rounded-full bg-blue-600 relative cursor-pointer">
+            <div class="absolute right-0.5 top-0.5 w-5 h-5 bg-white rounded-full shadow-sm transition-all"></div>
+          </div>
+        </div>
+        <div class="flex items-center justify-between py-2 border-t border-slate-200/60">
+          <div>
+            <p class="text-sm font-bold text-slate-700">Promotional Emails</p>
+            <p class="text-[11px] text-slate-400 font-medium">Deals and new venue alerts</p>
+          </div>
+          <div class="w-10 h-6 rounded-full bg-slate-300 relative cursor-pointer">
+            <div class="absolute left-0.5 top-0.5 w-5 h-5 bg-white rounded-full shadow-sm transition-all"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>

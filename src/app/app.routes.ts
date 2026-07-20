@@ -19,6 +19,11 @@ export const routes: Routes = [
       import('./features/auth/auth.routes').then((m) => m.AUTH_ROUTES),
   },
   {
+    path: 'settings',
+    loadChildren: () =>
+      import('./features/settings/settings.routes').then((m) => m.SETTINGS_ROUTES),
+  },
+  {
     path: 'search',
     loadChildren: () =>
       import('./features/search/search.routes').then((m) => m.SEARCH_ROUTES),

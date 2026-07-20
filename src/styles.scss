@@ -39,6 +39,66 @@ body {
 }
 
 /* ============================================
+   Dark Mode
+   ============================================ */
+.dark body,
+.dark {
+  background-color: #1a1d23;
+  color: #c8cdd5;
+}
+
+.dark .neo-bg {
+  background-color: #1a1d23;
+}
+
+.dark .neo-shadow {
+  box-shadow: 9px 9px 16px rgb(10, 12, 16, 0.7), -9px -9px 16px rgba(40, 44, 52, 0.5);
+}
+
+.dark .neo-shadow-inset {
+  box-shadow: inset 6px 6px 10px 0 rgba(10, 12, 16, 0.7), inset -6px -6px 10px 0 rgba(40, 44, 52, 0.6);
+}
+
+.dark .neo-button {
+  background-color: #1a1d23;
+  box-shadow: 9px 9px 16px rgb(10, 12, 16, 0.7), -9px -9px 16px rgba(40, 44, 52, 0.5);
+}
+
+.dark .neo-button:active {
+  box-shadow: inset 6px 6px 10px 0 rgba(10, 12, 16, 0.7), inset -6px -6px 10px 0 rgba(40, 44, 52, 0.6);
+}
+
+.dark .neo-input {
+  background-color: #1a1d23;
+  box-shadow: inset 6px 6px 10px 0 rgba(10, 12, 16, 0.7), inset -6px -6px 10px 0 rgba(40, 44, 52, 0.6);
+}
+
+.dark .text-slate-800,
+.dark .text-slate-700 {
+  color: #e2e8f0 !important;
+}
+
+.dark .text-slate-600 {
+  color: #94a3b8 !important;
+}
+
+.dark .text-slate-500 {
+  color: #7a8599 !important;
+}
+
+.dark .text-slate-400 {
+  color: #64748b !important;
+}
+
+.dark .border-slate-200\/60 {
+  border-color: rgba(51, 65, 85, 0.5) !important;
+}
+
+.dark img {
+  filter: brightness(0.9);
+}
+
+/* ============================================
    PrimeNG Select — Neomorphic Theme
    ============================================ */
 .p-select {

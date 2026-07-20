@@ -1,0 +1,277 @@
+<p-toast></p-toast>
+
+@if (user) {
+  <div class="min-h-screen pt-20 pb-8 px-4 md:px-8">
+    <div class="max-w-3xl mx-auto">
+
+      <!-- Profile Header Card -->
+      <div class="neo-bg neo-shadow rounded-2xl p-5 md:p-6 mb-5">
+        <div class="flex flex-col sm:flex-row items-center gap-5">
+          <!-- Avatar -->
+          <div class="relative group shrink-0">
+            @if (user.avatar) {
+              <img [src]="user.avatar" [alt]="user.name"
+                class="w-20 h-20 md:w-24 md:h-24 rounded-2xl object-cover ring-4 ring-blue-100" />
+            } @else {
+              <div class="w-20 h-20 md:w-24 md:h-24 rounded-2xl bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center text-white text-3xl md:text-4xl font-extrabold shadow-lg">
+                {{ userInitial }}
+              </div>
+            }
+            <button
+              class="absolute inset-0 rounded-2xl bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200 cursor-pointer"
+              (click)="triggerFileInput()">
+              <i class="pi pi-camera text-white text-xl"></i>
+            </button>
+            <input #fileInput type="file" accept="image/*" class="hidden" (change)="onFileSelected($event)" />
+          </div>
+
+          <!-- Info -->
+          <div class="text-center sm:text-left flex-1 min-w-0">
+            <h1 class="text-xl md:text-2xl font-extrabold text-slate-800 truncate">{{ user.name }}</h1>
+            <p class="text-sm text-slate-500 font-medium mt-0.5">{{ user.email }}</p>
+            <div class="flex items-center justify-center sm:justify-start gap-2 mt-2">
+              <span class="neo-shadow-inset px-2.5 py-0.5 rounded-lg text-[11px] font-bold text-blue-600 uppercase">
+                {{ roleLabel }}
+              </span>
+              @if (user.avatar) {
+                <button class="text-[11px] font-bold text-red-400 hover:text-red-500 transition-colors cursor-pointer"
+                  (click)="removeAvatar()">
+                  Remove photo
+                </button>
+              }
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab Switcher -->
+      <div class="flex gap-2 mb-5">
+        <button
+          class="flex-1 py-2.5 rounded-xl text-sm font-bold transition-all duration-200 cursor-pointer"
+          [class]="activeTab === 'profile' ? 'bg-blue-600 text-white shadow-md' : 'neo-button text-slate-600 hover:text-blue-600'"
+          (click)="activeTab = 'profile'">
+          <i class="pi pi-user mr-1.5"></i> Profile Details
+        </button>
+        <button
+          class="flex-1 py-2.5 rounded-xl text-sm font-bold transition-all duration-200 cursor-pointer"
+          [class]="activeTab === 'password' ? 'bg-blue-600 text-white shadow-md' : 'neo-button text-slate-600 hover:text-blue-600'"
+          (click)="activeTab = 'password'">
+          <i class="pi pi-lock mr-1.5"></i> Change Password
+        </button>
+      </div>
+
+      <!-- ========== PROFILE DETAILS TAB ========== -->
+      @if (activeTab === 'profile') {
+        <div class="neo-bg neo-shadow rounded-2xl p-5 md:p-6">
+          <div class="flex items-center justify-between mb-4">
+            <h2 class="text-sm font-bold text-slate-700">Personal Information</h2>
+            @if (!isEditing) {
+              <button
+                class="neo-button px-3 py-1.5 rounded-lg text-xs font-bold text-blue-600 hover:text-blue-700 transition-colors cursor-pointer"
+                (click)="toggleEdit()">
+                <i class="pi pi-pencil mr-1"></i> Edit
+              </button>
+            }
+          </div>
+
+          <form [formGroup]="profileForm" (ngSubmit)="saveProfile()" class="flex flex-col gap-4">
+            <!-- Name -->
+            <div>
+              <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">
+                Full Name
+              </label>
+              @if (isEditing) {
+                <div class="relative isolate">
+                  <input type="text" formControlName="name" placeholder="Your name"
+                    class="neo-input relative z-0 w-full pl-10 pr-4 py-2.5 rounded-xl text-sm text-slate-700 font-medium placeholder-slate-400"
+                    [class]="isFieldInvalid(profileForm, 'name') ? 'ring-2 ring-red-400' : ''" />
+                  <i class="pi pi-user absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm z-10 pointer-events-none"></i>
+                </div>
+                @if (hasError(profileForm, 'name', 'required')) {
+                  <div class="mt-1 text-[11px] text-red-500 font-medium">Name is required</div>
+                }
+              } @else {
+                <p class="text-sm font-bold text-slate-700 py-2.5">{{ user.name }}</p>
+              }
+            </div>
+
+            <!-- Email -->
+            <div>
+              <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">
+                Email Address
+              </label>
+              @if (isEditing) {
+                <div class="relative isolate">
+                  <input type="email" formControlName="email" placeholder="you@example.com"
+                    class="neo-input relative z-0 w-full pl-10 pr-4 py-2.5 rounded-xl text-sm text-slate-700 font-medium placeholder-slate-400"
+                    [class]="isFieldInvalid(profileForm, 'email') ? 'ring-2 ring-red-400' : ''" />
+                  <i class="pi pi-envelope absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm z-10 pointer-events-none"></i>
+                </div>
+                @if (hasError(profileForm, 'email', 'required')) {
+                  <div class="mt-1 text-[11px] text-red-500 font-medium">Email is required</div>
+                } @else if (hasError(profileForm, 'email', 'email')) {
+                  <div class="mt-1 text-[11px] text-red-500 font-medium">Enter a valid email</div>
+                }
+              } @else {
+                <div class="flex items-center gap-2 py-2.5">
+                  <p class="text-sm font-bold text-slate-700">{{ user.email }}</p>
+                  <span class="neo-shadow-inset px-1.5 py-0.5 rounded text-[9px] font-bold text-green-600 uppercase">Verified</span>
+                </div>
+              }
+            </div>
+
+            <!-- Phone -->
+            <div>
+              <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">
+                Phone Number
+              </label>
+              @if (isEditing) {
+                <div class="relative isolate">
+                  <input type="tel" formControlName="phone" placeholder="+977 9800000000"
+                    class="neo-input relative z-0 w-full pl-10 pr-4 py-2.5 rounded-xl text-sm text-slate-700 font-medium placeholder-slate-400"
+                    [class]="isFieldInvalid(profileForm, 'phone') ? 'ring-2 ring-red-400' : ''" />
+                  <i class="pi pi-phone absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm z-10 pointer-events-none"></i>
+                </div>
+                @if (hasError(profileForm, 'phone', 'required')) {
+                  <div class="mt-1 text-[11px] text-red-500 font-medium">Phone is required</div>
+                } @else if (hasError(profileForm, 'phone', 'pattern')) {
+                  <div class="mt-1 text-[11px] text-red-500 font-medium">Enter a valid phone number</div>
+                }
+              } @else {
+                <p class="text-sm font-bold text-slate-700 py-2.5">{{ user.phone || 'Not provided' }}</p>
+              }
+            </div>
+
+            <!-- Role (read-only) -->
+            <div>
+              <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">
+                Account Type
+              </label>
+              <p class="text-sm font-bold text-slate-700 py-2.5">{{ roleLabel }}</p>
+            </div>
+
+            <!-- Action Buttons -->
+            @if (isEditing) {
+              <div class="flex gap-3 pt-2">
+                <button type="button"
+                  class="flex-1 py-2.5 rounded-xl font-bold text-sm neo-button text-slate-600 hover:text-blue-600 transition-colors cursor-pointer"
+                  (click)="toggleEdit()">
+                  Cancel
+                </button>
+                <button type="submit"
+                  class="flex-1 py-2.5 rounded-xl font-bold text-sm bg-blue-600 text-white hover:bg-blue-700 shadow-md transition-colors cursor-pointer">
+                  <i class="pi pi-check mr-1"></i> Save Changes
+                </button>
+              </div>
+            }
+          </form>
+        </div>
+      }
+
+      <!-- ========== PASSWORD TAB ========== -->
+      @if (activeTab === 'password') {
+        <div class="neo-bg neo-shadow rounded-2xl p-5 md:p-6">
+          <h2 class="text-sm font-bold text-slate-700 mb-4">Update Password</h2>
+          <p class="text-xs text-slate-400 font-medium mb-5">
+            Use a strong password with at least 6 characters, including letters and numbers.
+          </p>
+
+          <form [formGroup]="passwordForm" (ngSubmit)="changePassword()" class="flex flex-col gap-4">
+            <!-- Current Password -->
+            <div>
+              <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">
+                Current Password
+              </label>
+              <div class="relative isolate">
+                <input [type]="showCurrentPassword ? 'text' : 'password'" formControlName="currentPassword"
+                  placeholder="Enter current password"
+                  class="neo-input relative z-0 w-full pl-10 pr-10 py-2.5 rounded-xl text-sm text-slate-700 font-medium placeholder-slate-400"
+                  [class]="isFieldInvalid(passwordForm, 'currentPassword') ? 'ring-2 ring-red-400' : ''" />
+                <i class="pi pi-lock absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm z-10 pointer-events-none"></i>
+                <button type="button"
+                  class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-700 transition-colors z-20 cursor-pointer"
+                  (click)="showCurrentPassword = !showCurrentPassword">
+                  <i [class]="showCurrentPassword ? 'pi pi-eye-slash text-base' : 'pi pi-eye text-base'"></i>
+                </button>
+              </div>
+              @if (hasError(passwordForm, 'currentPassword', 'required')) {
+                <div class="mt-1 text-[11px] text-red-500 font-medium">Current password is required</div>
+              }
+            </div>
+
+            <!-- New Password -->
+            <div>
+              <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">
+                New Password
+              </label>
+              <div class="relative isolate">
+                <input [type]="showNewPassword ? 'text' : 'password'" formControlName="newPassword"
+                  placeholder="Enter new password"
+                  class="neo-input relative z-0 w-full pl-10 pr-10 py-2.5 rounded-xl text-sm text-slate-700 font-medium placeholder-slate-400"
+                  [class]="isFieldInvalid(passwordForm, 'newPassword') ? 'ring-2 ring-red-400' : ''" />
+                <i class="pi pi-lock absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm z-10 pointer-events-none"></i>
+                <button type="button"
+                  class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-700 transition-colors z-20 cursor-pointer"
+                  (click)="showNewPassword = !showNewPassword">
+                  <i [class]="showNewPassword ? 'pi pi-eye-slash text-base' : 'pi pi-eye text-base'"></i>
+                </button>
+              </div>
+              @if (hasError(passwordForm, 'newPassword', 'required')) {
+                <div class="mt-1 text-[11px] text-red-500 font-medium">New password is required</div>
+              } @else if (hasError(passwordForm, 'newPassword', 'minlength')) {
+                <div class="mt-1 text-[11px] text-red-500 font-medium">Must be at least 6 characters</div>
+              }
+            </div>
+
+            <!-- Confirm Password -->
+            <div>
+              <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">
+                Confirm New Password
+              </label>
+              <div class="relative isolate">
+                <input [type]="showConfirmPassword ? 'text' : 'password'" formControlName="confirmPassword"
+                  placeholder="Confirm new password"
+                  class="neo-input relative z-0 w-full pl-10 pr-10 py-2.5 rounded-xl text-sm text-slate-700 font-medium placeholder-slate-400"
+                  [class]="isFieldInvalid(passwordForm, 'confirmPassword') ? 'ring-2 ring-red-400' : ''" />
+                <i class="pi pi-lock absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm z-10 pointer-events-none"></i>
+                <button type="button"
+                  class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-700 transition-colors z-20 cursor-pointer"
+                  (click)="showConfirmPassword = !showConfirmPassword">
+                  <i [class]="showConfirmPassword ? 'pi pi-eye-slash text-base' : 'pi pi-eye text-base'"></i>
+                </button>
+              </div>
+              @if (hasError(passwordForm, 'confirmPassword', 'required')) {
+                <div class="mt-1 text-[11px] text-red-500 font-medium">Please confirm your password</div>
+              } @else if (hasError(passwordForm, 'confirmPassword', 'passwordMismatch')) {
+                <div class="mt-1 text-[11px] text-red-500 font-medium">Passwords do not match</div>
+              }
+            </div>
+
+            <!-- Submit -->
+            <button type="submit"
+              class="mt-1 py-2.5 rounded-xl font-bold text-sm bg-blue-600 text-white hover:bg-blue-700 shadow-md transition-colors cursor-pointer w-full sm:w-auto sm:self-start">
+              <i class="pi pi-check mr-1"></i> Update Password
+            </button>
+          </form>
+        </div>
+      }
+
+    </div>
+  </div>
+} @else {
+  <div class="min-h-screen pt-20 pb-8 px-4 flex items-center justify-center">
+    <div class="neo-bg neo-shadow rounded-3xl p-12 text-center max-w-md">
+      <div class="neo-shadow-inset w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4">
+        <i class="pi pi-user text-3xl text-slate-300"></i>
+      </div>
+      <h2 class="text-xl font-bold text-slate-700 mb-2">Not logged in</h2>
+      <p class="text-slate-500 text-sm font-medium mb-6">
+        Please login to view your profile.
+      </p>
+      <a routerLink="/auth/login"
+        class="bg-blue-600 text-white px-6 py-2.5 rounded-xl font-bold text-sm hover:bg-blue-700 transition-colors shadow-md no-underline inline-block">
+        <i class="pi pi-sign-in mr-2"></i> Login
+      </a>
+    </div>
+  </div>
+}
